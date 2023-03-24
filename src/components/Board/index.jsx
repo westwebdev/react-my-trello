@@ -14,7 +14,7 @@ const Board = () => {
     const [tasksStatus, setTasksStatus] = useState(statusData);
 
     useEffect(() => {
-        const _filteredTasks = createFilteredTasks(tasks);
+        const _filteredTasks = createFilteredTasks(tasks, tasksStatus);
 
         setFilteredTasks(_filteredTasks);
     }, [changeStatus]);

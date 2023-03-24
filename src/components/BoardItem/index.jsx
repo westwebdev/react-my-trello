@@ -1,5 +1,5 @@
 import { Box, Heading, Select, Text } from '@chakra-ui/react';
-import React, { useContext } from 'react';
+import React, { useContext, useEffect } from 'react';
 import { useState } from 'react';
 import TasksContext from '../../context/tasksContext';
 import statusData from '../../data/taskStatus';
@@ -7,6 +7,7 @@ import statusData from '../../data/taskStatus';
 const BoardItem = ({task}) => {
     const [status, setStatus] = useState(task.status);
     const {tasks, setTasks, changeStatus, setChangeStatus} = useContext(TasksContext);
+    const {tasksStatus, setTasksStatus} = useContext(TasksContext);
 
     const changeItemStatus = (e, targetId) => {
         let value = e.target.value;
@@ -24,7 +25,7 @@ const BoardItem = ({task}) => {
             </Heading>
             <Select my='2' value={status} onChange={(e) => changeItemStatus(e, task.id)}>
                 {
-                    statusData.map(
+                    tasksStatus.map(
                         item => <option key={item.id} value={item.id}>{item.title}</option>
                     )
                 }

@@ -1,6 +1,6 @@
 import { Button, FormControl, FormLabel, Input, Select } from "@chakra-ui/react";
 
-const formRender = (formObject) => {
+const formRender = (formObject, formState, setFormState) => {
     {
         return formObject.map(
             (item) => {
@@ -11,14 +11,23 @@ const formRender = (formObject) => {
                         return (
                             <FormControl mb='4' key={item.id}>
                                 <FormLabel htmlFor={item.id}>{item.label}</FormLabel>
-                                <Input id={item.id} type={item.type} />
+                                <Input
+                                    id={item.id}
+                                    type={item.type}
+                                    value={formState[item.id] || ''}
+                                    onChange={(e) => setFormState({...formState, [item.id]: e.target.value})}
+                                />
                             </FormControl>
                         );
                     case 'select':
                         return (
                             <FormControl mb='4' key={item.id}>
                                 <FormLabel htmlFor='taskColor'>Task kind color</FormLabel>
-                                <Select>
+                                <Select 
+                                    value={formState[item.id] || ''}
+                                    onChange={(e) => setFormState({...formState, [item.id]: e.target.value})}
+                                >
+                                    <option key={`${item.id}_empty`} value=''>Choose variant</option>
                                     {
                                         item.option.map(
                                             item =>
@@ -30,7 +39,7 @@ const formRender = (formObject) => {
                         );
                     case 'submit':
                         return (
-                            <FormControl mb='4' key={item.id}>
+                            <FormControl key={item.id}>
                                 <Button colorScheme='blue' type={item.type}>{item.label}</Button>
                             </FormControl>
                         )

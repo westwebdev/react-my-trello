@@ -1,26 +1,33 @@
 import { Box, Heading, VStack } from '@chakra-ui/react';
-import React from 'react';
+import React, { useContext } from 'react';
 
 import BoardItem from '../BoardItem';
 import statusData from '../../data/taskStatus';
+import TasksContext from '../../context/tasksContext';
 
 const BoardCol = ({tasks, title, colId}) => {
+    const {tasksStatus, setTasksStatus} = useContext(TasksContext);
+
     const columnBg = () => {
         let color;
-
-        switch (colId) {
-            case 'inProcess':
-                color = 'yellow.300'
-                break;
-            case 'testing':
-                color = 'orange.300'
-                break;
-            case 'done':
-                color = 'green.300'
-                break;
-            default:
-                color = 'gray.100'
-                break;
+        const taskStatus = tasksStatus.filter(item => item.id === colId);
+        if (taskStatus.length && taskStatus[0].color) {
+            color = taskStatus[0].color;
+        } else {
+            switch (colId) {
+                case 'inProcess':
+                    color = 'yellow.300'
+                    break;
+                case 'testing':
+                    color = 'orange.300'
+                    break;
+                case 'done':
+                    color = 'green.300'
+                    break;
+                default:
+                    color = 'gray.100'
+                    break;
+            }
         }
 
         return color;

@@ -1,9 +1,7 @@
-import statusData from "../data/taskStatus";
-
-export const createFilteredTasks = (tasksData) => {
+export const createFilteredTasks = (tasksData, tasksStatus) => {
     let newArray = [];
 
-    statusData.map((status) => {
+    tasksStatus.map((status) => {
         let filteredTasks = tasksData.filter(task => task.status === status.id);
 
         if (filteredTasks.length) {
