@@ -4,6 +4,7 @@ import React, { useContext } from 'react';
 import BoardItem from '../BoardItem';
 import statusData from '../../data/taskStatus';
 import TasksContext from '../../context/tasksContext';
+import { colorsForTaskKind } from '../../data/colors';
 
 const BoardCol = ({tasks, title, colId}) => {
     const {tasksStatus, setTasksStatus} = useContext(TasksContext);
@@ -16,16 +17,16 @@ const BoardCol = ({tasks, title, colId}) => {
         } else {
             switch (colId) {
                 case 'inProcess':
-                    color = 'yellow.300'
+                    color = colorsForTaskKind.find(item => item.id === 'yellowColor').value;
                     break;
                 case 'testing':
-                    color = 'orange.300'
+                    color = colorsForTaskKind.find(item => item.id === 'orangeColor').value;
                     break;
                 case 'done':
-                    color = 'green.300'
+                    color = colorsForTaskKind.find(item => item.id === 'greenColor').value;
                     break;
                 default:
-                    color = 'gray.100'
+                    color = colorsForTaskKind.find(item => item.id === 'grayColor').value;
                     break;
             }
         }

@@ -13,31 +13,45 @@ import {
 import TasksContext from '../../../context/tasksContext';
 import { taskStatusForm } from '../../../data/forms';
 import formRender from '../../../utils/formRender';
+import { extendFormData, getFormDataByFieldId, splitFormToBodyAndFooter } from '../../../utils/formUtils';
+import { formValidation } from '../../../utils/formValidation';
 
-const AddStatusModal = ({isModalOpen, onModalClose}) => {
+const AddStatusModal = ({onModalClose}) => {
     const {tasksStatus, setTasksStatus} = useContext(TasksContext);
-    const [taskFormData, setTaskFormData] = useState({});
+    const [taskFormData, setTaskStatusData] = useState(taskStatusForm);
 
-    const taskStatusFormBody = taskStatusForm.filter(item => item.type !== 'submit');
-    const taskStatusFormFooter = taskStatusForm.filter(item => item.type === 'submit');
+    const taskStatusFormBody = splitFormToBodyAndFooter(taskFormData).body;
+    const taskStatusFormFooter = splitFormToBodyAndFooter(taskFormData).footer;
 
     const onSubmitForm = (e) => {
         e.preventDefault();
 
-        setTasksStatus([
-            ...tasksStatus,
-            {
-                id: taskFormData.taskName.toLowerCase(),
-                title: taskFormData.taskName,
-                color: taskFormData.taskColor
-            }
-        ])
-        setTaskFormData('');
-        onModalClose();
+        const {form, isValid} = formValidation(taskFormData);
+
+        if (isValid) {
+            setTasksStatus([
+                ...tasksStatus,
+                {
+                    id: getFormDataByFieldId(taskFormData, 'taskName').toLowerCase(),
+                    title: getFormDataByFieldId(taskFormData, 'taskName'),
+                    color: getFormDataByFieldId(taskFormData, 'taskColor')
+                }
+            ])
+            onModalClose();
+        } else {
+            setTaskStatusData([
+                ...form
+            ])
+        }
+    }
+
+    const blurHandler = (e, item) => {
+        extendFormData(e, item, taskStatusFormBody, taskStatusFormFooter, setTaskStatusData);
     }
 
     return (
-        <Modal isOpen={isModalOpen} onClose={onModalClose}>
+        <>
+        {/* <Modal isOpen={isModalOpen} onClose={onModalClose}> */}
             <ModalOverlay />
             <ModalContent>
                 <ModalHeader>Add new kind of status</ModalHeader>
@@ -45,7 +59,11 @@ const AddStatusModal = ({isModalOpen, onModalClose}) => {
                 <form onSubmit={onSubmitForm}>
                     <ModalBody>
                         {
-                            formRender(taskStatusFormBody, taskFormData, setTaskFormData)
+                            formRender(
+                                taskStatusFormBody,
+                                taskFormData,
+                                blurHandler
+                            )
                         }
                     </ModalBody>
                     <ModalFooter>
@@ -55,7 +73,8 @@ const AddStatusModal = ({isModalOpen, onModalClose}) => {
                     </ModalFooter>
                 </form>
             </ModalContent>
-        </Modal>
+        {/* </Modal> */}
+        </>
     );
 }
 

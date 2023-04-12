@@ -1,10 +1,23 @@
 import { Box, Button, Flex, Grid, Link, SimpleGrid, useDisclosure } from '@chakra-ui/react';
-import React from 'react';
+import React, { useState } from 'react';
 import { NavLink as RoutLink } from 'react-router-dom';
+import ModalWrapper from '../ModalWrapper';
 import AddStatusModal from './modals/AddStatusModal';
+import AddTaskModal from './modals/AddTaskModal';
 
 const BoardMenu = () => {
     const { isOpen, onOpen, onClose } = useDisclosure();
+    const [ modal, setModal ] = useState(React.Fragment);
+
+    const onActiveModal = (modalName) => {
+        if (modalName === 'newStatus') {
+            setModal(<AddStatusModal onModalClose={onClose} />);
+        } else if (modalName === 'newTask') {
+            setModal(<AddTaskModal onModalClose={onClose} />);
+        }
+
+        onOpen();
+    }
 
     return (
         <>
@@ -15,16 +28,16 @@ const BoardMenu = () => {
                 borderBottom='1px solid gray'
             >
                 <Box mx='4'>
-                    <Button onClick={onOpen}>Add Status</Button>
+                    <Button onClick={() => onActiveModal('newStatus')}>Add Status</Button>
                 </Box>
                 <Box mx='4'>
-                    <Link as={RoutLink} variant='asButton'>
-                        Add Task
-                    </Link>
+                    <Button onClick={() => onActiveModal('newTask')}>Add Task</Button>
                 </Box>
             </Flex>
 
-            <AddStatusModal isModalOpen={isOpen} onModalClose={onClose} />
+            <ModalWrapper isModalOpen={isOpen} onModalClose={onClose}>
+                {modal}
+            </ModalWrapper>
         </>
     );
 }

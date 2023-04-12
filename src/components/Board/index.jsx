@@ -17,7 +17,7 @@ const Board = () => {
         const _filteredTasks = createFilteredTasks(tasks, tasksStatus);
 
         setFilteredTasks(_filteredTasks);
-    }, [changeStatus]);
+    }, [changeStatus, tasks]);
 
     return (
         tasks.length === 0

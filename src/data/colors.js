@@ -23,5 +23,25 @@ export const colorsForTaskKind = [
         id: 'pinkColor',
         name: 'Pink',
         value: 'pink.300'
+    },
+    {
+        id: 'yellowColor',
+        name: 'Yellow',
+        value: 'yellow.300'
+    },
+    {
+        id: 'orangeColor',
+        name: 'Orange',
+        value: 'orange.300'
+    },
+    {
+        id: 'greenColor',
+        name: 'Green',
+        value: 'green.300'
+    },
+    {
+        id: 'grayColor',
+        name: 'Gray',
+        value: 'gray.300'
     }
 ]

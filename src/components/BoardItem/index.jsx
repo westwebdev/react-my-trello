@@ -21,7 +21,7 @@ const BoardItem = ({task}) => {
     return (
         <Box bg='white' p='2'>
             <Heading as='h3' size='md'>
-                {task.id} - {task.title}
+                {task.title} (id: {task.id})
             </Heading>
             <Select my='2' value={status} onChange={(e) => changeItemStatus(e, task.id)}>
                 {
