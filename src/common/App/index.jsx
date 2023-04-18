@@ -4,9 +4,9 @@ import {
   Container,
 } from '@chakra-ui/react';
 
-import Header from '../Header';
-import MainRoute from '../Routers/MainRoute';
-import theme from '../theme';
+import Header from '../../components/Header';
+import MainRoute from '../../routers/MainRoute';
+import theme from '../../components/theme';
 
 function App() {
     return (

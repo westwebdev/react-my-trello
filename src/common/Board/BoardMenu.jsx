@@ -1,7 +1,7 @@
 import { Box, Button, Flex, Grid, Link, SimpleGrid, useDisclosure } from '@chakra-ui/react';
 import React, { useState } from 'react';
 import { NavLink as RoutLink } from 'react-router-dom';
-import ModalWrapper from '../ModalWrapper';
+import ModalWrapper from '../../components/ModalWrapper';
 import AddStatusModal from './modals/AddStatusModal';
 import AddTaskModal from './modals/AddTaskModal';
 

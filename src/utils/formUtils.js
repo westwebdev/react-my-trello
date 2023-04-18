@@ -11,18 +11,15 @@ export const getFormDataByFieldId = (form, fieldId) => {
     return form.find(item => item.id === fieldId).value;
 }
 
-export const extendFormData = (e, item, formBody, formFooter, setFormState) => {
+export const extendFormData = (e, item, formData, setFormState) => {
     let fieldObj = fieldValidation({
         ...item,
         value: e.target.value,
     });
 
-    formBody = formBody.map(item => {
+    formData = formData.map(item => {
         return item.id === fieldObj.id ? item = {...item, ...fieldObj} : item;
     });
 
-    setFormState([
-        ...formBody,
-        ...formFooter
-    ]);
+    setFormState([...formData]);
 }

@@ -6,7 +6,8 @@ export const taskStatusForm = [
         type: 'text',
         placeholder: '',
         label: 'Task kind name',
-        required: true
+        required: true,
+        events: ['onBlur', 'onChange']
     },
     {
         id: 'taskColor',
@@ -14,7 +15,8 @@ export const taskStatusForm = [
         placeholder: '',
         label: 'Task kind name',
         option: colorsForTaskKind,
-        required: true
+        required: true,
+        events: ['onBlur', 'onChange']
     },
     {
         id: 'submitTaskStatusForm',
@@ -29,25 +31,52 @@ export const newTaskForm = [
         type: 'text',
         placeholder: '',
         label: 'Task Subject',
-        required: true
+        required: true,
+        events: ['onBlur', 'onChange']
     },
     {
         id: 'taskDescription',
         type: 'textarea',
         placeholder: 'Type description here',
         label: 'Task Description',
-        required: true
+        required: true,
+        events: ['onBlur', 'onChange']
     },
     {
         id: 'taskStatus',
         type: 'select',
         placeholder: '',
         label: 'Task Kind',
-        required: true
+        required: true,
+        events: ['onBlur', 'onChange']
     },
     {
         id: 'submitNewTaskForm',
         type: 'submit',
         label: 'Add',
+    }
+]
+
+export const loginForm = [
+    {
+        id: 'login',
+        type: 'text',
+        placeholder: '',
+        label: 'Login',
+        required: true,
+        events: ['onBlur']
+    },
+    {
+        id: 'loginPass',
+        type: 'password',
+        placeholder: '',
+        label: 'Password',
+        required: true,
+        events: ['onBlur']
+    },
+    {
+        id: 'submitLogin',
+        type: 'submit',
+        label: 'Submit',
     }
 ]

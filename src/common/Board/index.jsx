@@ -1,7 +1,7 @@
 import { Box, Flex, SimpleGrid } from '@chakra-ui/react';
 import React, { useContext, useEffect, useState } from 'react';
 import { createFilteredTasks } from '../../helpers/tasksHelper';
-import BoardCol from '../BoardCol';
+import BoardCol from '../../components/BoardCol';
 import TasksContext from '../../context/tasksContext';
 import BoardMenu from './BoardMenu';
 import tasksArray from '../../data/tasks';

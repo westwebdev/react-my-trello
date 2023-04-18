@@ -3,6 +3,7 @@ import { Box, Flex, Link, MenuItem, MenuList } from '@chakra-ui/react';
 import ColorModeSwitcher from '../ColorSwitcher/ColorModeSwitcher';
 import Logo from '../Logo';
 import { NavLink as RoutLink } from 'react-router-dom';
+import { mainMenu } from '../../routers/data/routes';
 
 const Header = () => {
     return (
@@ -16,9 +17,25 @@ const Header = () => {
             <RoutLink to='/'>
                 <Logo />
             </RoutLink>
-            <Box mr='auto' ml='2'>
-                <Link as={RoutLink} to='/board'>Board</Link>
-            </Box>
+            <Flex mx='2'>
+                {
+                    Object.keys(mainMenu).map(item => {
+                        return(
+                            <Box
+                                p='2'
+                                key={mainMenu[item].name}
+                            >
+                                <Link
+                                    as={RoutLink}
+                                    to={mainMenu[item].path}
+                                >
+                                    {mainMenu[item].name}
+                                </Link>
+                            </Box>
+                        )
+                    })
+                }
+            </Flex>
             <ColorModeSwitcher justifySelf="flex-end" />
         </Flex>
     );

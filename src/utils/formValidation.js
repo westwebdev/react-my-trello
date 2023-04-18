@@ -1,3 +1,7 @@
+export const clearValidationErrors = (form) => {
+    return form.map(item => item.valid = true)
+}
+
 export const fieldValidation = (field) => {
     if (field.required && !field?.value?.trim()?.length) {
         field.valid = false;
@@ -11,14 +15,14 @@ export const fieldValidation = (field) => {
 export const formValidation = (form) => {
     let valid = true;
 
-    form.map(item => {
-        fieldValidation(item);
+    const validatedForm = form.map(item => {
+        return fieldValidation(item);
     });
 
     valid = !form.some(item => item.valid === false);
 
     return {
-        form,
+        validatedForm,
         isValid: valid
     };
 }
