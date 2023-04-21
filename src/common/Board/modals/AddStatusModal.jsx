@@ -8,15 +8,31 @@ import {
 } from '@chakra-ui/react';
 
 import TasksContext from '../../../context/tasksContext';
-import { taskStatusForm } from '../../../data/forms';
-import formComponentRender from '../../../utils/formComponentRender';
+import { taskColumnForm, taskStatusForm } from '../../../data/forms';
+import formComponentRender from '../../../components/Forms/formComponentRender';
 import { extendFormData, getFormDataByFieldId } from '../../../utils/formUtils';
 import { clearValidationErrors, formValidation } from '../../../utils/formValidation';
-import FormWrapper from '../../../components/FormWrapper';
+import FormWrapper from '../../../components/Forms/FormWrapper';
 
-const AddStatusModal = ({onModalClose}) => {
-    const {tasksStatus, setTasksStatus} = useContext(TasksContext);
-    const [formData, setFormData] = useState(taskStatusForm);
+const AddStatusModal = ({onModalClose, isCreateCol}) => {
+    const taskStatusOrColumnForm = isCreateCol ? taskColumnForm : taskStatusForm;
+    const {tasks, setTasks, tasksStatusState, setTasksStatusState} = useContext(TasksContext);
+    const [formData, setFormData] = useState(taskStatusOrColumnForm);
+
+    if (isCreateCol) {
+        formData.map(item => {
+            if (item.id === 'taskIds') {
+                item.option = tasks.map(item => {
+                    return {
+                        id: item.id,
+                        value: item.id,
+                        name: `${item.title} (id: ${item.id})`
+                    }
+                });
+            }
+            return true;
+        });
+    }
 
     const onSubmitForm = (e) => {
         e.preventDefault();
@@ -24,14 +40,32 @@ const AddStatusModal = ({onModalClose}) => {
         const {validatedForm, isValid} = formValidation([...formData]);
 
         if (isValid) {
-            setTasksStatus([
-                ...tasksStatus,
-                {
-                    id: getFormDataByFieldId(validatedForm, 'taskName').toLowerCase(),
-                    title: getFormDataByFieldId(validatedForm, 'taskName'),
-                    color: getFormDataByFieldId(validatedForm, 'taskColor')
-                }
+            const newTaskStatus = {
+                id: `taskStatusName_${Date.now()}`,
+                title: getFormDataByFieldId(validatedForm, 'taskStatusName'),
+                color: getFormDataByFieldId(validatedForm, 'taskStatusColor')
+            }
+
+            setTasksStatusState([
+                ...tasksStatusState,
+                newTaskStatus
             ]);
+
+            if (isCreateCol) {
+                const taskId = Number(validatedForm.find(item => item.id === "taskIds").value);
+                const unchangedTasks = tasks.filter(({id}) => id !== taskId);
+                const changedTask = tasks.find(item => 
+                        item.id === taskId
+                        &&
+                        (item.status = newTaskStatus.id)
+                    );
+
+                setTasks([
+                    ...unchangedTasks,
+                    {...changedTask}
+                ]);
+            }
+
             onModalClose();
         } else {
             setFormData([
@@ -48,13 +82,7 @@ const AddStatusModal = ({onModalClose}) => {
         onBlur: (e, item) => blurHandler(e, item)
     }
 
-    // useEffect(() => {
-    //     console.log(11111)
-    // }, [formData])
-
     useEffect(() => {
-        console.log(22222)
-
         return () => {
             clearValidationErrors([...formData]);
         }
@@ -64,14 +92,14 @@ const AddStatusModal = ({onModalClose}) => {
         <>
             <ModalOverlay />
             <ModalContent>
-                <ModalHeader>Add new kind of status</ModalHeader>
+                <ModalHeader>Add new {isCreateCol ? 'column' : 'kind of status' }</ModalHeader>
                 <ModalCloseButton />
                 <FormWrapper
                     isModalForm={true}
                     submitHandler={onSubmitForm}
                     formComponent={
                         formComponentRender({
-                            formObject: formData ,
+                            formObject: formData,
                             eventsHandler,
                             options: {isSeparateFooter: true}
                         })

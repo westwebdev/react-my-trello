@@ -1,10 +1,12 @@
-import { Flex } from '@chakra-ui/react';
-import React from 'react';
+import React, { useContext } from 'react';
+import GlobalContext from '../../../context/globalContext';
 import Dashboard from './Dashboard';
 import LoginPage from './LoginPage';
 
 const MyAccount = () => {
-    const isUserLoggedIn = false;
+    const {userContextData, setUserContextData} = useContext(GlobalContext)
+
+    const isUserLoggedIn = userContextData.isLogged;
 
     return (
         <>
@@ -13,7 +15,10 @@ const MyAccount = () => {
                 ?
                 <Dashboard/>
                 :
-                <LoginPage/>
+                <LoginPage
+                    userContextData={userContextData}
+                    setUserContextData={setUserContextData}
+                />
             }
         </>
     );

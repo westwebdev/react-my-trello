@@ -1,21 +1,40 @@
-import { Box, SimpleGrid } from '@chakra-ui/react';
+import { Box, Divider, SimpleGrid, Text } from '@chakra-ui/react';
 import React, { useState } from 'react';
-import FormWrapper from '../../../components/FormWrapper';
+import FormWrapper from '../../../components/Forms/FormWrapper';
 import { loginForm } from '../../../data/forms';
-import formComponentRender from '../../../utils/formComponentRender';
+import formComponentRender from '../../../components/Forms/formComponentRender';
 import { extendFormData } from '../../../utils/formUtils';
 import { formValidation } from '../../../utils/formValidation';
 
-const LoginPage = () => {
+const LoginPage = ({userContextData, setUserContextData}) => {
     const [loginFormData, setLoginFormData] = useState(loginForm);
 
     const onSubmitForm = (e) => {
         e.preventDefault();
 
+        // dummy code, only for showing differences between user roles
+        const loginValue = e.target.login.value;
+        let userRole;
+        switch (loginValue) {
+            case 'w':
+                userRole = 'manager'
+                break;
+            case 'q':
+                userRole = 'admin'
+                break;
+            default:
+                userRole = 'user'
+                break;
+        }
+
         const {validatedForm, isValid} = formValidation([...loginFormData]);
 
         if (isValid) {
-            console.log('logged');
+            setUserContextData({
+                ...userContextData,
+                isLogged: true,
+                role: userRole
+            })
         } else {
             setLoginFormData([
                 ...validatedForm
@@ -44,6 +63,8 @@ const LoginPage = () => {
                         })
                     }
                 />
+                <Divider my='4' />
+                <Text>Type into login field <b>'q'</b> - for admin role, <b>'w'</b> - for manager role, <b>any</b> other for general user role. Then go to the Board page</Text>
             </Box>
         </SimpleGrid>
     );

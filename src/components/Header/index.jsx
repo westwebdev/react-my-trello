@@ -1,11 +1,20 @@
-import React from 'react';
-import { Box, Flex, Link, MenuItem, MenuList } from '@chakra-ui/react';
-import ColorModeSwitcher from '../ColorSwitcher/ColorModeSwitcher';
+import React, { useContext } from 'react';
+import { Box, Button, Flex, Link } from '@chakra-ui/react';
 import Logo from '../Logo';
 import { NavLink as RoutLink } from 'react-router-dom';
 import { mainMenu } from '../../routers/data/routes';
+import GlobalContext from '../../context/globalContext';
 
 const Header = () => {
+    const {userContextData, setUserContextData} = useContext(GlobalContext)
+
+    const logOut = () => {
+        setUserContextData({
+            ...userContextData,
+            isLogged: false
+        })
+    }
+
     return (
         <Flex
             justifyContent='space-between'
@@ -17,7 +26,7 @@ const Header = () => {
             <RoutLink to='/'>
                 <Logo />
             </RoutLink>
-            <Flex mx='2'>
+            <Flex mx='2' ml='auto' mr='auto'>
                 {
                     Object.keys(mainMenu).map(item => {
                         return(
@@ -36,7 +45,15 @@ const Header = () => {
                     })
                 }
             </Flex>
-            <ColorModeSwitcher justifySelf="flex-end" />
+            {
+                userContextData.isLogged
+                ?
+                <Button onClick={() => logOut()}>
+                    Loguot
+                </Button>
+                :
+                <></>
+            }
         </Flex>
     );
 };

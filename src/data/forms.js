@@ -2,7 +2,7 @@ import { colorsForTaskKind } from "./colors";
 
 export const taskStatusForm = [
     {
-        id: 'taskName',
+        id: 'taskStatusName',
         type: 'text',
         placeholder: '',
         label: 'Task kind name',
@@ -10,7 +10,7 @@ export const taskStatusForm = [
         events: ['onBlur', 'onChange']
     },
     {
-        id: 'taskColor',
+        id: 'taskStatusColor',
         type: 'select',
         placeholder: '',
         label: 'Task kind name',
@@ -22,6 +22,27 @@ export const taskStatusForm = [
         id: 'submitTaskStatusForm',
         type: 'submit',
         label: 'Add',
+    }
+]
+
+export const taskColumnForm = [
+    {
+        ...taskStatusForm.find(({id}) => id === 'taskStatusName')
+    },
+    {
+        ...taskStatusForm.find(({id}) => id === 'taskStatusColor')
+    },
+    {
+        id: 'taskIds',
+        type: 'select',
+        placeholder: '',
+        label: 'Choose target tasks',
+        required: true,
+        events: ['onBlur', 'onChange']
+    },
+    {
+        ...taskStatusForm.find(({id}) => id === 'submitTaskStatusForm'),
+        label: 'Add Column',
     }
 ]
 

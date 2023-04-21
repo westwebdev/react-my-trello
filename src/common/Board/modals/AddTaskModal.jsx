@@ -9,19 +9,19 @@ import {
 
 import TasksContext from '../../../context/tasksContext';
 import { newTaskForm } from '../../../data/forms';
-import formComponentRender from '../../../utils/formComponentRender';
+import formComponentRender from '../../../components/Forms/formComponentRender';
 import { clearValidationErrors, formValidation } from '../../../utils/formValidation';
 import { extendFormData, getFormDataByFieldId } from '../../../utils/formUtils';
-import FormWrapper from '../../../components/FormWrapper';
+import FormWrapper from '../../../components/Forms/FormWrapper';
 
 const AddTaskModal = ({onModalClose}) => {
-    const {tasksStatus} = useContext(TasksContext);
+    const {tasksStatusState} = useContext(TasksContext);
     const {tasks, setTasks} = useContext(TasksContext);
     const [formData, setFormData] = useState(newTaskForm);
 
     formData.map(item => {
         if (item.id === 'taskStatus') {
-            item.option = tasksStatus.map(item => {
+            item.option = tasksStatusState.map(item => {
                 return {
                     id: item.id,
                     value: item.id,
@@ -62,10 +62,6 @@ const AddTaskModal = ({onModalClose}) => {
     const eventsHandler = {
         onBlur: (e, item) => blurHandler(e, item)
     }
-
-    // useEffect(() => {
-    //     console.log(1111111111);
-    // }, [formData]);
 
     useEffect(() => {
         return () => {

@@ -1,7 +1,7 @@
-export const createFilteredTasks = (tasksData, tasksStatus) => {
+export const createFilteredTasks = (tasksData, tasksStatusState) => {
     let newArray = [];
 
-    tasksStatus.map((status) => {
+    tasksStatusState.map((status) => {
         let filteredTasks = tasksData.filter(task => task.status === status.id);
 
         if (filteredTasks.length) {
@@ -15,4 +15,3 @@ export const createFilteredTasks = (tasksData, tasksStatus) => {
 
     return newArray;
 }
-
