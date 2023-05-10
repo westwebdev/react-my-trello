@@ -1,39 +1,28 @@
-import { Box, Heading, Select, Text } from '@chakra-ui/react';
-import React, { useContext } from 'react';
-import { useState } from 'react';
-import TasksContext from '../../context/tasksContext';
+import { Box, Heading, Text } from '@chakra-ui/react';
+import React, { memo, useState } from 'react';
+import SpinnerComponent from '../SpinnerComponent';
+import TaskStatusSelect from './TaskStatusSelect';
 
-const BoardItem = ({task}) => {
-    const [status, setStatus] = useState(task.status);
-    const {tasks, setTasks, changeStatus, setChangeStatus} = useContext(TasksContext);
-    const {tasksStatusState} = useContext(TasksContext);
-
-    const changeItemStatus = (e) => {
-        let value = e.target.value;
-
-        task.status = value;
-        setStatus(value);
-        setTasks(tasks);
-        setChangeStatus(!changeStatus);
-    }
+const BoardItem = memo(({task, statusId}) => {
+    const [showSpinner, setShowSpinner] = useState(false)
 
     return (
-        <Box bg='white' p='2'>
+        <Box bg='white' p='2' position='relative'>
+            {
+                showSpinner &&
+                <SpinnerComponent />
+            }
             <Heading as='h3' size='md'>
                 {task.title} (id: {task.id})
             </Heading>
-            <Select my='2' value={status} onChange={(e) => changeItemStatus(e, task.id)}>
-                {
-                    tasksStatusState.map(
-                        item => <option key={item.id} value={item.id}>{item.title}</option>
-                    )
-                }
-            </Select>
+            <TaskStatusSelect statusId={statusId} task={task} setShowSpinner={setShowSpinner} />
             <Text>
                 {task.text}
             </Text>
         </Box>
    );
-}
+}, (prevProps, nextProps) => {
+    return prevProps.statusId === nextProps.statusId;
+})
 
 export default BoardItem;

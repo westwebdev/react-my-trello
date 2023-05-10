@@ -21,7 +21,11 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "server-json": "json-server --no-ui db.json",
+    "api-server-json": "nodemon ./api/index.js",
+    "debug-server-json": "nodemon --inspect=3001 ./api/index.js",
+    "app-run": "concurrently --kill-others \"npm run start\" \"npm run debug-server-json\" "
   },
   "eslintConfig": {
     "extends": "react-app"
@@ -37,5 +41,10 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "devDependencies": {
+    "concurrently": "^8.0.1",
+    "json-server": "^0.17.3",
+    "nodemon": "^2.0.22"
   }
 }

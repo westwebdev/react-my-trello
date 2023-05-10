@@ -7,7 +7,6 @@ import AddTaskModal from './modals/AddTaskModal';
 
 const BoardMenu = () => {
     const {userContextData} = useContext(GlobalContext)
-
     const { isOpen, onOpen, onClose } = useDisclosure();
     const [ modal, setModal ] = useState(React.Fragment);
 

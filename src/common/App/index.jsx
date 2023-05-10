@@ -14,6 +14,8 @@ function App() {
     const [userDataState, setUserDataState] = useState(user);
     const [userRoleDataState] = useState(userRole);
 
+    const MemoHeader = React.memo(Header);
+
     return (
         <ChakraProvider theme={theme}>
             <GlobalContext.Provider
@@ -23,7 +25,7 @@ function App() {
                     userRoleContext: userRoleDataState
                 }}
             >
-                <Header />
+                <MemoHeader />
                 <Container p='4' maxW='container.xl'>
                     <MainRoute />
                 </Container>

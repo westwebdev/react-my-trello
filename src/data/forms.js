@@ -5,7 +5,7 @@ export const taskStatusForm = [
         id: 'taskStatusName',
         type: 'text',
         placeholder: '',
-        label: 'Task kind name',
+        label: 'Task status name',
         required: true,
         events: ['onBlur', 'onChange']
     },
@@ -13,7 +13,7 @@ export const taskStatusForm = [
         id: 'taskStatusColor',
         type: 'select',
         placeholder: '',
-        label: 'Task kind name',
+        label: 'Task status color',
         option: colorsForTaskKind,
         required: true,
         events: ['onBlur', 'onChange']
@@ -60,14 +60,6 @@ export const newTaskForm = [
         type: 'textarea',
         placeholder: 'Type description here',
         label: 'Task Description',
-        required: true,
-        events: ['onBlur', 'onChange']
-    },
-    {
-        id: 'taskStatus',
-        type: 'select',
-        placeholder: '',
-        label: 'Task Kind',
         required: true,
         events: ['onBlur', 'onChange']
     },
