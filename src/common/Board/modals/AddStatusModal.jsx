@@ -1,72 +1,69 @@
 import React, { useContext, useEffect, useState } from 'react';
-
-import {
-    ModalOverlay,
-    ModalContent,
-    ModalHeader,
-    ModalCloseButton,
-} from '@chakra-ui/react';
-
-import TasksContext from '../../../context/tasksContext';
-import { taskColumnForm, taskStatusForm } from '../../../data/forms';
+import { ModalOverlay, ModalContent, ModalHeader, ModalCloseButton, Text } from '@chakra-ui/react';
+import { taskStatusForm } from '../../../data/forms';
 import formComponentRender from '../../../components/Forms/formComponentRender';
 import { extendFormData, getFormDataByFieldId } from '../../../utils/formUtils';
 import { clearValidationErrors, formValidation } from '../../../utils/formValidation';
 import FormWrapper from '../../../components/Forms/FormWrapper';
+import { tasksStatusAction } from '../../../provider/tasksStatusProvider';
+import useFetch from '../../../services/hooks/useFetch';
+import SpinnerComponent from '../../../components/SpinnerComponent';
+import TasksStatusContext from '../../../context/tasksStatusContext';
 
-const AddStatusModal = ({onModalClose, isCreateCol}) => {
-    const taskStatusOrColumnForm = isCreateCol ? taskColumnForm : taskStatusForm;
-    const {tasks, setTasks, tasksStatusState, setTasksStatusState} = useContext(TasksContext);
-    const [formData, setFormData] = useState(taskStatusOrColumnForm);
+const AddStatusModal = ({onModalClose}) => {
+    const { tasksStatus } = useContext(TasksStatusContext);
+    const [showSpinner, setShowSpinner] = useState(false)
+    const [formData, setFormData] = useState(taskStatusForm);
+    const [newTaskStatus, setNewTaskStatus] = useState({});
+    const [isStatusAlreadyExist, setIsStatusAlreadyExist] = useState(false);
+    const {isLoading, isError, errorMsg, addData } = useFetch();
+    const { addStatus } = tasksStatusAction;
 
-    if (isCreateCol) {
-        formData.map(item => {
-            if (item.id === 'taskIds') {
-                item.option = tasks.map(item => {
-                    return {
-                        id: item.id,
-                        value: item.id,
-                        name: `${item.title} (id: ${item.id})`
-                    }
-                });
+    useEffect(() => {
+        if (!isLoading) {
+            setShowSpinner(isLoading);
+            addStatus(newTaskStatus)
+            onModalClose();
+
+            if (isError) {
+                console.error(errorMsg)
             }
-            return true;
-        });
+        }
+    }, [isLoading]);
+
+    useEffect(() => {
+        if (Object.keys(newTaskStatus).length) {
+            addData('addTasksStatus', {status: newTaskStatus});
+        }
+    }, [newTaskStatus]);
+
+    const checkRepeatingStatus = (id) => {
+        return tasksStatus.findIndex(item => item.id === id) + 1
     }
 
     const onSubmitForm = (e) => {
         e.preventDefault();
-
         const {validatedForm, isValid} = formValidation([...formData]);
 
         if (isValid) {
-            const newTaskStatus = {
-                id: `taskStatusName_${Date.now()}`,
-                title: getFormDataByFieldId(validatedForm, 'taskStatusName'),
-                color: getFormDataByFieldId(validatedForm, 'taskStatusColor')
+            const id = getFormDataByFieldId(validatedForm, 'taskStatusName').replace(' ', '_').toLowerCase();
+
+            const statusAlreadyExist = checkRepeatingStatus(id);
+
+            if (!statusAlreadyExist) {
+                setShowSpinner(true);
+
+                const newTaskStatus = {
+                    id,
+                    title: getFormDataByFieldId(validatedForm, 'taskStatusName'),
+                    color: getFormDataByFieldId(validatedForm, 'taskStatusColor')
+                };
+
+                setNewTaskStatus(newTaskStatus);
+            } else {
+                setIsStatusAlreadyExist(true)
             }
 
-            setTasksStatusState([
-                ...tasksStatusState,
-                newTaskStatus
-            ]);
-
-            if (isCreateCol) {
-                const taskId = Number(validatedForm.find(item => item.id === "taskIds").value);
-                const unchangedTasks = tasks.filter(({id}) => id !== taskId);
-                const changedTask = tasks.find(item => 
-                        item.id === taskId
-                        &&
-                        (item.status = newTaskStatus.id)
-                    );
-
-                setTasks([
-                    ...unchangedTasks,
-                    {...changedTask}
-                ]);
-            }
-
-            onModalClose();
         } else {
             setFormData([
                 ...validatedForm
@@ -92,8 +89,16 @@ const AddStatusModal = ({onModalClose, isCreateCol}) => {
         <>
             <ModalOverlay />
             <ModalContent>
-                <ModalHeader>Add new {isCreateCol ? 'column' : 'kind of status' }</ModalHeader>
+                {
+                    showSpinner &&
+                    <SpinnerComponent />
+                }
+                <ModalHeader>Add new column</ModalHeader>
                 <ModalCloseButton />
+                {
+                    isStatusAlreadyExist &&
+                    <Text align='center' color='red.500'>This column name has already used</Text>
+                }
                 <FormWrapper
                     isModalForm={true}
                     submitHandler={onSubmitForm}

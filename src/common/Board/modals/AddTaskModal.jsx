@@ -1,53 +1,60 @@
 import React, { useContext, useEffect, useState } from 'react';
-
-import {
-    ModalOverlay,
-    ModalContent,
-    ModalHeader,
-    ModalCloseButton,
-} from '@chakra-ui/react';
-
+import { ModalOverlay, ModalContent, ModalHeader, ModalCloseButton } from '@chakra-ui/react';
 import TasksContext from '../../../context/tasksContext';
 import { newTaskForm } from '../../../data/forms';
 import formComponentRender from '../../../components/Forms/formComponentRender';
 import { clearValidationErrors, formValidation } from '../../../utils/formValidation';
 import { extendFormData, getFormDataByFieldId } from '../../../utils/formUtils';
 import FormWrapper from '../../../components/Forms/FormWrapper';
+import { tasksAction } from '../../../provider/tasksProvider';
+import SpinnerComponent from '../../../components/SpinnerComponent';
+import useFetch from '../../../services/hooks/useFetch';
 
-const AddTaskModal = ({onModalClose}) => {
-    const {tasksStatusState} = useContext(TasksContext);
-    const {tasks, setTasks} = useContext(TasksContext);
+const AddTaskModal = ({colId, onModalClose}) => {
+    const {tasks} = useContext(TasksContext);
+    const { addTask } = tasksAction;
     const [formData, setFormData] = useState(newTaskForm);
+    const [columnTasks, setColumnTasks] = useState(tasks[colId] || []);
+    const [isMounted, setIsMounted] = useState(false);
+    const [showSpinner, setShowSpinner] = useState(false)
+    const {isLoading, isError, errorMsg, addData } = useFetch();
 
-    formData.map(item => {
-        if (item.id === 'taskStatus') {
-            item.option = tasksStatusState.map(item => {
-                return {
-                    id: item.id,
-                    value: item.id,
-                    name: item.title
-                }
-            });
+    useEffect(() => {
+        if (!isLoading) {
+            setShowSpinner(isLoading);
+            addTask({ [colId]: columnTasks });
+
+            onModalClose();
+
+            if (isError) {
+                console.error(errorMsg)
+            }
         }
-        return true;
-    });
+    }, [isLoading]);
+
+    useEffect(() => {
+        if (isMounted) {
+            addData('addTask', {tasksInCol: { [colId]: columnTasks }});
+        } else {
+          setIsMounted(true);
+        }
+      }, [columnTasks]);
 
     const onSubmitForm = (e) => {
         e.preventDefault();
-
         const {validatedForm, isValid} = formValidation([...formData]);
 
         if (isValid) {
-            setTasks([
-                ...tasks,
-                {
-                    id: Date.now(),
-                    title: getFormDataByFieldId(validatedForm, 'taskSubject'),
-                    text: getFormDataByFieldId(validatedForm, 'taskDescription'),
-                    status: getFormDataByFieldId(validatedForm, 'taskStatus')
-                }
-            ]);
-            onModalClose();
+            setShowSpinner(true);
+
+            const newTask = {
+                id: Date.now(),
+                title: getFormDataByFieldId(validatedForm, 'taskSubject'),
+                text: getFormDataByFieldId(validatedForm, 'taskDescription'),
+                status: colId
+            }
+
+            setColumnTasks([...columnTasks, newTask]);
         } else {
             setFormData([
                 ...validatedForm,
@@ -65,7 +72,7 @@ const AddTaskModal = ({onModalClose}) => {
 
     useEffect(() => {
         return () => {
-            clearValidationErrors([...formData]);
+            clearValidationErrors([...formData])
         }
     });
 
@@ -73,6 +80,10 @@ const AddTaskModal = ({onModalClose}) => {
         <>
             <ModalOverlay />
             <ModalContent>
+                {
+                    showSpinner &&
+                    <SpinnerComponent />
+                }
                 <ModalHeader>Add task</ModalHeader>
                 <ModalCloseButton />
                 <FormWrapper

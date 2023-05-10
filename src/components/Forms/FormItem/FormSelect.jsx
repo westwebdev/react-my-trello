@@ -9,7 +9,8 @@ const FormSelect = ({item, setEventsHandler}) => {
             isRequired={item.required === true}
             mb='4'
         >
-            <FormLabel htmlFor='taskColor'>Task kind color</FormLabel>
+            {/* <FormLabel htmlFor='taskColor'>Task kind color</FormLabel> */}
+            <FormLabel htmlFor={item.id}>{item.label}</FormLabel>
             <Select
                 // value={formObject.find(field => field.id === item.id).value || ''}
                 {...setEventsHandler(item)}

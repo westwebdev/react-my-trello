@@ -39,19 +39,19 @@ const formComponentRender = ({formObject, eventsHandler, options: {isSeparateFoo
                         case 'number':
                         case 'password':
                             return (
-                                <FormInput item={item} setEventsHandler={setEventsHandler} />
+                                <FormInput key={item.id} item={item} setEventsHandler={setEventsHandler} />
                             );
                         case 'textarea':
                             return (
-                                <FormTextarea item={item} setEventsHandler={setEventsHandler} />
+                                <FormTextarea key={item.id} item={item} setEventsHandler={setEventsHandler} />
                             );
                         case 'select':
                             return (
-                                <FormSelect item={item} setEventsHandler={setEventsHandler} />
+                                <FormSelect key={item.id} item={item} setEventsHandler={setEventsHandler} />
                             );
                         case 'submit':
                             return (
-                                <FormButton item={item}/>
+                                <FormButton key={item.id} item={item}/>
                             )
                         default:
                             return true;
