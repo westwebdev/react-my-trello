@@ -4,15 +4,13 @@ import { tasksStatusAction } from '../../provider/tasksStatusProvider';
 import useFetch from '../../services/hooks/useFetch';
 import BoardColInner from './BoardColInner';
 import SpinnerComponent from '../SpinnerComponent';
-import AddNewTask from './AddNewTask';
+import AddNewTask from '../BoardItem/AddNewTask';
 
 const BoardCol = memo(({colItem}) => {
     const { removeStatus } = tasksStatusAction;
     const [showSpinner, setShowSpinner] = useState(true)
     const [isEmptyBoard, setIsEmptyBoard] = useState(true);
     const {isLoading, isError, errorMsg, removeData } = useFetch();
-
-    console.log("🚀 ~ BoardCol ~ BoardCol:",colItem)
 
     useEffect(() => {
         if (!isLoading) {
@@ -24,11 +22,6 @@ const BoardCol = memo(({colItem}) => {
             }
         }
     }, [isLoading]);
-
-    useEffect(() => {
-        console.log("🚀 ~ BoardCol ~ isEmptyBoard:", colItem.id, isEmptyBoard)
-
-    }, [isEmptyBoard])
 
     const remove = () => {
         setShowSpinner(false);

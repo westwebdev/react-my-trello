@@ -11,7 +11,6 @@ const BoardColInner = ({ colId, setIsEmptyBoard }) => {
         if (tasks[colId]) {
             setTasksInCol(tasks[colId]);
             setIsEmptyBoard(false);
-            console.log("🚀 ~ BoardColInner ~ setIsEmptyBoard:", colId)
         }
         if (!tasks[colId]?.length) {
             setIsEmptyBoard(true);

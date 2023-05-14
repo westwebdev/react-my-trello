@@ -13,7 +13,6 @@ const BoardInner = () => {
     const { setStatuses } = tasksStatusAction;
 
     const { data: tasksData, isLoading: isTasksDataLoading, getData: getStatusData } = useFetch();
-    // const { tasks } = useContext(TasksContext);
     const { setTask } = tasksAction;
 
     const [isMounted, setIsMounted] = useState(false);
@@ -26,27 +25,16 @@ const BoardInner = () => {
       }, [isMounted]);
 
     useEffect(() => {
-        console.log("🚀 ~ useEffect ~ tasksStatusData:")
         if (tasksStatusData) {
             setStatuses(tasksStatusData)
         }
     }, [isTasksStatusDataLoading]);
 
     useEffect(() => {
-        console.log("🚀 ~ useEffect ~ tasksData:")
         if (tasksData) {
             setTask(tasksData)
         }
     }, [isTasksDataLoading]);
-
-
-    // useEffect(() => {
-    //     if (!userContextData.isLogged) {
-    //         navigate('/myaccount')
-    //     }
-    // }, [userContextData]);
-
-    console.log("🚀 ~ render:")
 
     return (
         tasksStatus.length === 0
@@ -60,7 +48,6 @@ const BoardInner = () => {
         </Flex>
         :
         <>
-            {/* <BoardMenu /> */}
             <Box
                 paddingBottom='20px'
                 borderBottomWidth='1px'
