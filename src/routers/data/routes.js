@@ -5,11 +5,15 @@ export const mainMenu = {
     'board': {
         name: 'Board',
         path: '/board',
-        component: <Board/>
+        component: <Board/>,
+        isGuarded: true,
+        guardType: 'login'
     },
     'myAccount': {
         name: 'My Account',
         path: '/myaccount',
-        component: <MyAccount/>
+        component: <MyAccount/>,
+        isGuarded: false
+
     }
 }

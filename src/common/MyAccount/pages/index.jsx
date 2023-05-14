@@ -4,23 +4,10 @@ import Dashboard from './Dashboard';
 import LoginPage from './LoginPage';
 
 const MyAccount = () => {
-    const {userContextData, setUserContextData} = useContext(GlobalContext)
-
-    const isUserLoggedIn = userContextData.isLogged;
+    const {userData} = useContext(GlobalContext)
 
     return (
-        <>
-            {
-                isUserLoggedIn
-                ?
-                <Dashboard/>
-                :
-                <LoginPage
-                    userContextData={userContextData}
-                    setUserContextData={setUserContextData}
-                />
-            }
-        </>
+        <> { userData?.isLoggedIn ? <Dashboard/> : <LoginPage/> } </>
     );
 }
 
