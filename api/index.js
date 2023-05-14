@@ -82,8 +82,6 @@ server.post('/addTasksStatus', (req, res) => {
     }
 });
 
-
-// server.delete('/removeTasksStatus/:id', (req, res) => {
 server.delete('/removeTasksStatus', (req, res) => {
     const taskId = req.body.id;
     const taskStatuses = dataBase.get('taskStatus');
