@@ -1,6 +1,6 @@
 import { Box, Button, Modal, useDisclosure } from '@chakra-ui/react';
 import React from 'react';
-import AddTaskModal from '../../common/Board/modals/AddTaskModal';
+import AddTaskModal from './AddTaskModal';
 
 const AddNewTask = ({ colId }) => {
     const { isOpen, onOpen, onClose } = useDisclosure();
@@ -11,10 +11,7 @@ const AddNewTask = ({ colId }) => {
 
     return (
         <>
-            <Button onClick={() => openModal()  }
-            >
-                <Box>Add new task</Box>
-            </Button>
+            <Button onClick={ () => openModal() }>Add new task</Button>
 
             <Modal isOpen={isOpen} onClose={onClose}>
                 <AddTaskModal colId={colId} onModalClose={onClose} />

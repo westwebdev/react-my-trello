@@ -1,20 +1,16 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { ModalOverlay, ModalContent, ModalHeader, ModalCloseButton } from '@chakra-ui/react';
-import TasksContext from '../../../context/tasksContext';
-import { newTaskForm } from '../../../data/forms';
+import { newBoardForm } from '../../../data/forms';
 import formComponentRender from '../../../components/Forms/formComponentRender';
 import { clearValidationErrors, formValidation } from '../../../utils/formValidation';
 import { extendFormData, getFormDataByFieldId } from '../../../utils/formUtils';
 import FormWrapper from '../../../components/Forms/FormWrapper';
-import { tasksAction } from '../../../provider/tasksProvider';
 import SpinnerComponent from '../../../components/SpinnerComponent';
 import useFetch from '../../../services/hooks/useFetch';
 
-const AddTaskModal = ({colId, onModalClose}) => {
-    const {tasks} = useContext(TasksContext);
-    const { addTask } = tasksAction;
-    const [formData, setFormData] = useState(newTaskForm);
-    const [columnTasks, setColumnTasks] = useState(tasks[colId] || []);
+const AddBoardModal = ({ boardDispatch, onModalClose }) => {
+    const [formData, setFormData] = useState(newBoardForm);
+    const [newBoard, setNewBoard] = useState({});
     const [isMounted, setIsMounted] = useState(false);
     const [showSpinner, setShowSpinner] = useState(false)
     const {isLoading, isError, errorMsg, addData } = useFetch();
@@ -22,8 +18,7 @@ const AddTaskModal = ({colId, onModalClose}) => {
     useEffect(() => {
         if (!isLoading) {
             setShowSpinner(isLoading);
-            addTask({ [colId]: columnTasks });
-
+            boardDispatch({'type': 'addBoard', newBoard})
             onModalClose();
 
             if (isError) {
@@ -34,11 +29,11 @@ const AddTaskModal = ({colId, onModalClose}) => {
 
     useEffect(() => {
         if (isMounted) {
-            addData('addTask', {tasksInCol: { [colId]: columnTasks }});
+            addData('addBoard', newBoard);
         } else {
           setIsMounted(true);
         }
-      }, [columnTasks]);
+      }, [newBoard]);
 
     const onSubmitForm = (e) => {
         e.preventDefault();
@@ -47,14 +42,12 @@ const AddTaskModal = ({colId, onModalClose}) => {
         if (isValid) {
             setShowSpinner(true);
 
-            const newTask = {
-                id: Date.now(),
-                title: getFormDataByFieldId(validatedForm, 'taskSubject'),
-                text: getFormDataByFieldId(validatedForm, 'taskDescription'),
-                status: colId
+            const task = {
+                id: `board_${Date.now()}`,
+                name: getFormDataByFieldId(validatedForm, 'boardName')
             }
 
-            setColumnTasks([...columnTasks, newTask]);
+            setNewBoard(task);
         } else {
             setFormData([
                 ...validatedForm,
@@ -102,4 +95,4 @@ const AddTaskModal = ({colId, onModalClose}) => {
     );
 }
 
-export default AddTaskModal;
+export default AddBoardModal;

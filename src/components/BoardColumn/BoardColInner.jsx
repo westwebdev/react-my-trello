@@ -1,22 +1,26 @@
 import { VStack } from '@chakra-ui/react';
 import React, { useContext, useEffect, useState } from 'react';
-import TasksContext from '../../context/tasksContext';
-import BoardItem from '../BoardItem';
+import BoardItemContext from '../../context/boardItemContext';
+import BoardTask from '../BoardTask';
 
 const BoardColInner = ({ colId, setIsEmptyBoard }) => {
-    const { tasks } = useContext(TasksContext);
-    const [tasksInCol, setTasksInCol] = useState(tasks[colId] || []);
+    const { tasks } = useContext(BoardItemContext);
+    const [tasksInCol, setTasksInCol] = useState([]);
 
     useEffect(() => {
-        if (tasks[colId]) {
-            setTasksInCol(tasks[colId]);
-            setIsEmptyBoard(false);
+        if (tasks) {
+            const tasksArray = tasks[colId] || [];
             console.log("🚀 ~ BoardColInner ~ setIsEmptyBoard:", colId)
+
+            setTasksInCol(tasksArray);
+
+            if (tasksArray.length) {
+                setIsEmptyBoard(false);
+            } else {
+                setIsEmptyBoard(true);
+            }
         }
-        if (!tasks[colId]?.length) {
-            setIsEmptyBoard(true);
-        }
-    }, [tasks])
+    }, [tasks]);
 
     return (
         <VStack mt='4'>
@@ -24,7 +28,7 @@ const BoardColInner = ({ colId, setIsEmptyBoard }) => {
                 tasksInCol?.length
                 &&
                 tasksInCol.map(item => 
-                    <BoardItem
+                    <BoardTask
                         key={item.id}
                         task={item}
                         statusId={colId}

@@ -1,87 +1,101 @@
-import { Box, Flex, Skeleton } from '@chakra-ui/react';
+import { Box, Button, Flex, Heading, Skeleton } from '@chakra-ui/react';
 import React, { useContext, useEffect, useState } from 'react';
-import BoardCol from '../../components/BoardCol';
+import BoardColumn from '../../components/BoardColumn';
 import useFetch from '../../services/hooks/useFetch';
-import AddNewCol from '../../components/BoardCol/AddNewCol';
-import {TasksStatusContext} from '../../context/tasksStatusContext';
-import {tasksStatusAction} from '../../provider/tasksStatusProvider';
-import { tasksAction } from '../../provider/tasksProvider';
+import AddNewCol from '../../components/BoardColumn/modals/AddNewCol';
+import BoardItemContext from '../../context/boardItemContext';
+import RemoveButtonComponent from '../../components/RemoveButtonComponent';
+import useGetUserRole from '../../services/hooks/useGetUserRole';
 
-const BoardInner = () => {
-    const { data: tasksStatusData, isLoading: isTasksStatusDataLoading, getData: getTasksStatusData } = useFetch();
-    const { tasksStatus } = useContext(TasksStatusContext);
-    const { setStatuses } = tasksStatusAction;
-
-    const { data: tasksData, isLoading: isTasksDataLoading, getData: getStatusData } = useFetch();
-    // const { tasks } = useContext(TasksContext);
-    const { setTask } = tasksAction;
-
+const BoardInner = ({ boardName, boardDispatch, setShowSpinner }) => {
+    const { boardId, tasksStatus, taskStatusDispatch } = useContext(BoardItemContext);
+    const {isLoading, isError, errorMsg, removeData } = useFetch();
+    const [removeObj, setRemoveObj] = useState({});
     const [isMounted, setIsMounted] = useState(false);
-    useEffect(() => {
-        if (!isMounted) {
-            getTasksStatusData('getTasksStatus')
-            getStatusData('getTasks')
-            setIsMounted(true);
-        }
-      }, [isMounted]);
 
     useEffect(() => {
-        console.log("🚀 ~ useEffect ~ tasksStatusData:")
-        if (tasksStatusData) {
-            setStatuses(tasksStatusData)
+        if (!isLoading) {
+            setShowSpinner(isLoading);
+            boardDispatch({'type': 'removeBoard', board: removeObj})
+
+            if (isError) {
+                console.error(errorMsg)
+            }
         }
-    }, [isTasksStatusDataLoading]);
+    }, [isLoading]);
 
     useEffect(() => {
-        console.log("🚀 ~ useEffect ~ tasksData:")
-        if (tasksData) {
-            setTask(tasksData)
+        if (isMounted) {
+            removeData('removeBoard', {'board': removeObj});
+        } else {
+          setIsMounted(true);
         }
-    }, [isTasksDataLoading]);
+      }, [removeObj]);
 
+    const remove = () => {
+        setShowSpinner(true);
+        setRemoveObj({'id': boardId})
+    }
 
-    // useEffect(() => {
-    //     if (!userContextData.isLogged) {
-    //         navigate('/myaccount')
-    //     }
-    // }, [userContextData]);
-
-    console.log("🚀 ~ render:")
+    const userRole = useGetUserRole();
 
     return (
-        tasksStatus.length === 0
-        ?
-        <Flex justifyContent='center' alignItems='center'>
+        <Box
+            pos='relative'
+            width='100%'
+            borderTopWidth='1px'
+            borderTopStyle='solid'
+            borderTopColor='gray.400'
+        >
+            <Heading textAlign='center' pt='20px'>{boardName}</Heading>
             {
-                Array.from({ length: 5 }).map((_,i) => {
-                    return <Skeleton key={i} height='40px' width='100%' mx='2' />
-                })
+                !tasksStatus || !tasksStatus?.length && userRole === 'admin' &&
+                <RemoveButtonComponent remove={remove} />
             }
-        </Flex>
-        :
-        <>
-            {/* <BoardMenu /> */}
-            <Box
-                paddingBottom='20px'
-                borderBottomWidth='1px'
-                borderBottomStyle='solid'
-                borderBottomColor='gray.400'
+            <Flex
+                paddingY='20px'
             >
-                <Flex
-                    justifyContent='flex-start'
-                    alignItems='flex-start'
-                    overflowX='auto'
-                    maxHeight='700px'
-                >
                 {
-                    tasksStatus.map(item => 
-                        <BoardCol key={item.id} colItem={item} />
-                    )
+                    !tasksStatus
+                    ?
+                    <Flex justifyContent='center' alignItems='center'>
+                        {
+                            Array.from({ length: 4 }).map((_,i) => {
+                                return <Skeleton key={i} height='40px' width='100%' mx='2' />
+                            })
+                        }
+                    </Flex>
+                    :
+                    <Box
+                        flex='0 1 auto'
+                        overflowX='auto'
+                    >
+                        <Flex
+                            justifyContent='flex-start'
+                            alignItems='flex-start'
+                            overflowX='auto'
+                            maxHeight='700px'
+                            pt='10px'
+                        >
+                            {
+                                tasksStatus.map(item => 
+                                    <BoardColumn
+                                        key={item.id}
+                                        boardId={boardId}
+                                        colItem={item}
+                                        taskStatusDispatch={taskStatusDispatch}
+                                    />
+                                )
+                            }
+                        </Flex>
+                    </Box>
                 }
+                {
+                    (userRole === 'admin' || userRole === 'manager') &&
                     <AddNewCol />
-                </Flex>
-            </Box>
-        </>
+                }
+            </Flex>
+        </Box>
     );
 };
 

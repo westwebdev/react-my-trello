@@ -70,6 +70,22 @@ export const newTaskForm = [
     }
 ]
 
+export const newBoardForm = [
+    {
+        id: 'boardName',
+        type: 'text',
+        placeholder: '',
+        label: 'Board Name',
+        required: true,
+        events: ['onBlur', 'onChange']
+    },
+    {
+        id: 'submitNewBoardForm',
+        type: 'submit',
+        label: 'Add',
+    }
+]
+
 export const loginForm = [
     {
         id: 'login',
