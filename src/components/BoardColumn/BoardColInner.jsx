@@ -10,7 +10,6 @@ const BoardColInner = ({ colId, setIsEmptyBoard }) => {
     useEffect(() => {
         if (tasks) {
             const tasksArray = tasks[colId] || [];
-            console.log("🚀 ~ BoardColInner ~ setIsEmptyBoard:", colId)
 
             setTasksInCol(tasksArray);
 

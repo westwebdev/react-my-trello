@@ -14,8 +14,6 @@ const BoardColumn = memo(({ boardId, colItem, taskStatusDispatch }) => {
     const [removingData, setRemovingData] = useState({});
     const [isMounted, setIsMounted] = useState(false);
 
-    console.log("🚀 ~ BoardColumn ~ BoardColumn:",colItem)
-
     useEffect(() => {
         if (!isLoading) {
             setShowSpinner(isLoading);
