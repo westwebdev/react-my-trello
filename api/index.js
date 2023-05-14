@@ -1,10 +1,3 @@
-// const dataBase = require('../db')();
-// const jsonServer = require('json-server');
-// const server = jsonServer.create();
-// const router = jsonServer.router(dataBase);
-// // const router = jsonServer.router('../db.json');
-// const middleWares = jsonServer.defaults();
-
 const jsonServer = require('json-server');
 const server = jsonServer.create();
 const router = jsonServer.router('./db.json');
