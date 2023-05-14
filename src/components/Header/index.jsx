@@ -3,18 +3,8 @@ import { Box, Button, Flex, Link } from '@chakra-ui/react';
 import Logo from '../Logo';
 import { NavLink as RoutLink } from 'react-router-dom';
 import { mainMenu } from '../../routers/data/routes';
-import GlobalContext from '../../context/globalContext';
 
 const Header = () => {
-    const {userContextData, setUserContextData} = useContext(GlobalContext)
-
-    const logOut = () => {
-        setUserContextData({
-            ...userContextData,
-            isLogged: false
-        })
-    }
-
     return (
         <Flex
             justifyContent='space-between'
@@ -45,15 +35,6 @@ const Header = () => {
                     })
                 }
             </Flex>
-            {
-                userContextData.isLogged
-                ?
-                <Button onClick={() => logOut()}>
-                    Loguot
-                </Button>
-                :
-                <></>
-            }
         </Flex>
     );
 };

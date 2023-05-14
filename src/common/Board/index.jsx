@@ -10,9 +10,6 @@ const Board = () => {
         <TasksStatusContextProvider>
             <TasksContextProvider>
                 <BoardInner />
-                <Box py='2'>
-                    <Button width='100%'>Add New Board</Button>
-                </Box>
             </TasksContextProvider>
         </TasksStatusContextProvider>
         

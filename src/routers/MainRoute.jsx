@@ -1,8 +1,6 @@
 import React from 'react';
 import { Route, Routes } from 'react-router-dom';
-import Board from '../common/Board';
 import Home from '../common/Home';
-import MyAccount from '../common/MyAccount/pages';
 import { mainMenu } from './data/routes';
 
 const MainRoute = () => {
