@@ -1,25 +1,23 @@
 import React, { memo, useEffect, useState } from 'react';
-import { Box, Heading } from '@chakra-ui/react';
+import { Box, Button, Heading } from '@chakra-ui/react';
+import { tasksStatusAction } from '../../provider/tasksStatusProvider';
 import useFetch from '../../services/hooks/useFetch';
 import BoardColInner from './BoardColInner';
 import SpinnerComponent from '../SpinnerComponent';
-import AddNewTask from '../BoardTask/modals/AddNewTask';
-import RemoveButtonComponent from '../RemoveButtonComponent';
-import useGetUserRole from '../../services/hooks/useGetUserRole';
+import AddNewTask from './AddNewTask';
 
-const BoardColumn = memo(({ boardId, colItem, taskStatusDispatch }) => {
+const BoardCol = memo(({colItem}) => {
+    const { removeStatus } = tasksStatusAction;
     const [showSpinner, setShowSpinner] = useState(true)
     const [isEmptyBoard, setIsEmptyBoard] = useState(true);
     const {isLoading, isError, errorMsg, removeData } = useFetch();
-    const [removingData, setRemovingData] = useState({});
-    const [isMounted, setIsMounted] = useState(false);
 
-    console.log("🚀 ~ BoardColumn ~ BoardColumn:",colItem)
+    console.log("🚀 ~ BoardCol ~ BoardCol:",colItem)
 
     useEffect(() => {
         if (!isLoading) {
             setShowSpinner(isLoading);
-            taskStatusDispatch({'type': 'removeStatus', 'statusData': removingData })
+            removeStatus(colItem.id);
 
             if (isError) {
                 console.error(errorMsg)
@@ -28,19 +26,14 @@ const BoardColumn = memo(({ boardId, colItem, taskStatusDispatch }) => {
     }, [isLoading]);
 
     useEffect(() => {
-        if (isMounted) {
-            removeData('removeTasksStatus', removingData);
-        } else {
-          setIsMounted(true);
-        }
-      }, [removingData]);
+        console.log("🚀 ~ BoardCol ~ isEmptyBoard:", colItem.id, isEmptyBoard)
+
+    }, [isEmptyBoard])
 
     const remove = () => {
         setShowSpinner(false);
-        setRemovingData({boardId, colId: colItem.id})
+        removeData('removeTasksStatus',{id: colItem.id});
     }
-
-    const userRole = useGetUserRole();
 
     return (
         <Box
@@ -48,8 +41,8 @@ const BoardColumn = memo(({ boardId, colItem, taskStatusDispatch }) => {
             bg={colItem.color}
             p='2'
             mx='2'
-            flex='1 1 20%'
-            minW='20%'
+            flex='1 0 20%'
+            maxW='20%'
             display='flex'
             justifyContent='center'
             alignItems='center'
@@ -57,10 +50,6 @@ const BoardColumn = memo(({ boardId, colItem, taskStatusDispatch }) => {
             {
                 !showSpinner &&
                 <SpinnerComponent />
-            }
-            {
-                isEmptyBoard && userRole === 'admin' && 
-                <RemoveButtonComponent remove={remove} />
             }
             <Box
                 textAlign='center'
@@ -76,11 +65,15 @@ const BoardColumn = memo(({ boardId, colItem, taskStatusDispatch }) => {
                 </Heading>
                 {
                     <>
+                        <AddNewTask colId={colItem.id} />
+                        <BoardColInner colId={colItem.id} setIsEmptyBoard={setIsEmptyBoard} />
                         {
-                            (userRole === 'admin' || userRole === 'manager') &&
-                            <AddNewTask colId={colItem.id} />
+                            isEmptyBoard
+                            &&
+                            <Button onClick={() => remove()}>
+                                Remove Column
+                            </Button>
                         }
-                        <BoardColInner colId={colItem.id} setIsEmptyBoard={setIsEmptyBoard} />  
                     </>
                 }
 
@@ -91,4 +84,4 @@ const BoardColumn = memo(({ boardId, colItem, taskStatusDispatch }) => {
     return prevProps.colItem.id === currentProps.colItem.id
 })
 
-export default BoardColumn;
+export default BoardCol;

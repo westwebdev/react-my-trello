@@ -1,29 +1,18 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useContext } from 'react';
 import { Box, Button, Flex, Link } from '@chakra-ui/react';
 import Logo from '../Logo';
 import { NavLink as RoutLink } from 'react-router-dom';
 import { mainMenu } from '../../routers/data/routes';
 import GlobalContext from '../../context/globalContext';
-import useFetch from '../../services/hooks/useFetch';
 
 const Header = () => {
-    const {userData, setUserData} = useContext(GlobalContext);
-    const [unLoggedUser, setUnLoggedUser] = useState({isLoggedIn: false,role: ""})
-    const { data, isLoading, updateData } = useFetch();
-
-    useEffect(() => {
-        if (!isLoading) {
-            sessionStorage.removeItem('user');
-            setUserData(unLoggedUser)
-        }
-    }, [isLoading])
+    const {userContextData, setUserContextData} = useContext(GlobalContext)
 
     const logOut = () => {
-        updateData('logOutUser', unLoggedUser);
-        // setUserData({
-        //     ...userData,
-        //     isLoggedIn: false
-        // })
+        setUserContextData({
+            ...userContextData,
+            isLogged: false
+        })
     }
 
     return (
@@ -57,7 +46,7 @@ const Header = () => {
                 }
             </Flex>
             {
-                userData?.isLoggedIn
+                userContextData.isLogged
                 ?
                 <Button onClick={() => logOut()}>
                     Loguot

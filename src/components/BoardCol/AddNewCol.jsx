@@ -1,6 +1,6 @@
 import { Box, Button, Modal, useDisclosure } from '@chakra-ui/react';
 import React from 'react';
-import AddStatusModal from './AddStatusModal';
+import AddStatusModal from '../../common/Board/modals/AddStatusModal';
 
 const AddNewCol = () => {
     const { isOpen, onOpen, onClose } = useDisclosure();
@@ -15,7 +15,6 @@ const AddNewCol = () => {
                 bg='gray.200'
                 p='2'
                 mx='2'
-                mt='10px'
                 flex='1 0 10%'
                 maxW='10%'
                 height='75px'

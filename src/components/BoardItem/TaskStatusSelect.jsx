@@ -1,10 +1,14 @@
 import { Select } from '@chakra-ui/react';
 import React, { useContext, useEffect, useState } from 'react';
-import BoardItemContext from '../../context/boardItemContext';
+import TasksContext from '../../context/tasksContext';
+import TasksStatusContext from '../../context/tasksStatusContext';
+import { tasksAction } from '../../provider/tasksProvider';
 import useFetch from '../../services/hooks/useFetch';
 
 const TaskStatusSelect = ({statusId, task, setShowSpinner}) => {
-    const {boardId, tasks, tasksStatus, tasksDispatch} = useContext(BoardItemContext);
+    const {tasksStatus} = useContext(TasksStatusContext);
+    const { tasks } = useContext(TasksContext);
+    const { setTask } = tasksAction;
     const {isLoading, updateData } = useFetch();
 
     const [changedData, setChangedData] = useState({});
@@ -18,7 +22,7 @@ const TaskStatusSelect = ({statusId, task, setShowSpinner}) => {
     useEffect(() => {
         if (!isLoading) {
             setShowSpinner(true)
-            tasksDispatch({'type': 'changeTaskStatus', 'data': changedData})
+            setTask(tasks);
         }
     }, [isLoading])
 
@@ -36,11 +40,8 @@ const TaskStatusSelect = ({statusId, task, setShowSpinner}) => {
 
         setShowSpinner(true)
         setChangedData({
-            boardId,
-            columns: {
-                [statusId]: tasks[statusId],
-                [status]: tasks[status]
-            }
+            [statusId]: tasks[statusId],
+            [status]: tasks[status]
         })
     }
 

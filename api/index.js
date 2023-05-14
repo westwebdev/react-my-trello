@@ -6,57 +6,107 @@ const dataBase = router.db;
 server.use(middleWares);
 server.use(jsonServer.bodyParser);
 
-server.get('/getBoards', (req, res) => {
-    const boards = dataBase.get('boards').value();
 
+const jsonServer = require('json-server')
+const server = jsonServer.create()
+// const router = jsonServer.router(dataBase);
+
+const router = jsonServer.router('./db.json')
+const middlewares = jsonServer.defaults()
+
+
+server.use(middlewares);
+server.use(jsonServer.bodyParser)
+
+
+// server.use((req, res, next) => {
+//   if (req.method === 'POST' || req.method === 'PUT' || req.method === 'DELETE' || req.method === 'PATCH') {
+//     req.body.createdAt = Date.now()
+//   }
+//   // Continue to JSON Server router
+//   next()
+// })
+
+// server.use((req, res, next) => {
+//   if (req.method && (req.method === 'POST' || req.method === 'PUT' || req.method === 'DELETE')) {
+//     res.sendStatus(403);
+//   } else {
+//     next();
+//   }
+// // });
+
+// server.get('/getTasksStatus', (req, res) => {
+//     res.jsonp(req.query)
+//   })
+
+server.get('/getTasks', (req, res) => {
+    const tasks = router.db.get('tasks').value();
     res.json({
         success: true,
-        data: boards
+        data: tasks
     });
 });
 
-server.post('/addBoard', (req, res) => {
-    const newBoard = req.body;
+server.post('/addTask', (req, res) => {
+    const { tasksInCol } = req.body;
+    const colId = Object.keys(tasksInCol)[0];
+    
 
     try {
-        const boards = dataBase.get('boards');
+        router.db.read();
+        router.db.set(`tasks.${colId}`, tasksInCol[colId]).write();
+        // const tasksDB = router.db.get('tasks').value();
+        // const colId = Object.keys(newTask)[0];
 
-        dataBase.set(`boards`, [newBoard, ...boards]).write();
+        // tasksDB[colId] = tasksInCol;
+
+
+        // const taskStatusDB = router.db.set('taskStatus', [...router.db.get('taskStatus'), newTask])
+
+        // taskStatusDB.write();
 
         res.status(200).json({
             success: true
         });
     } catch (err) {
+        console.error(err);
         res.status(500).json({
             success: false,
-            errMsg: err.message
+            message: 'Server error'
         });
     }
-});
+})
 
-server.delete('/removeBoard', (req, res) => {
-    const { id } = req.body.board;
-    const boards = dataBase.get('boards');
-    const board = boards.find({ id: id }).value();
+server.put('/changeTasksStatus', (req, res) => {
+    const data = req.body;
+    try {
+        router.db.read();
+        Object.keys(data).map((colId) => router.db.set(`tasks.${colId}`, data[colId]).write() )
 
-    if (!board) {
-        res.json({
+        res.status(200).json({
+            success: true
+        });
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({
             success: false,
-            errMsg: `Board wasn't found!`
+            message: 'Server error'
         });
-
-        return;
     }
+})
 
-    boards.remove({ id: id }).write();
-    res.status(200).json({
-        success: true
-    });
-});
+
+// server.post('/change', (req, res) => {
+//     res.
+// })
+
+// server.post('/addTask', (req, res) => {
+//     const tasks = router.db.get('tasks').value();
+//     res.json(tasks);
+//   });
 
 server.get('/getTasksStatus', (req, res) => {
-    const taskStatuses = dataBase.get('taskStatus').value();
-
+    const taskStatuses = router.db.get('taskStatus').value();
     res.json({
         success: true,
         data: taskStatuses
@@ -64,28 +114,32 @@ server.get('/getTasksStatus', (req, res) => {
 });
 
 server.post('/addTasksStatus', (req, res) => {
-    const { status: newTaskStatus, boardId} = req.body;
+    const { status: newTaskStatus } = req.body;
 
     try {
-        const taskStatuses = dataBase.get(`taskStatus.${boardId}`);
+        router.db.read();
+        const taskStatusDB = router.db.set('taskStatus', [...router.db.get('taskStatus'), newTaskStatus])
 
-        dataBase.set(`taskStatus.${boardId}`, [...taskStatuses, newTaskStatus]).write();
+        taskStatusDB.write();
 
         res.status(200).json({
             success: true
         });
     } catch (err) {
+        console.error(err);
         res.status(500).json({
             success: false,
-            errMsg: err.message
+            message: 'Server error'
         });
     }
 });
 
+
+// server.delete('/removeTasksStatus/:id', (req, res) => {
 server.delete('/removeTasksStatus', (req, res) => {
-    const {colId, boardId} = req.body;
-    const taskStatuses = dataBase.get(`taskStatus.${boardId}`);
-    const taskStatus = taskStatuses.find({ id: colId }).value();
+    const taskId = req.body.id;
+    const taskStatuses = router.db.get('taskStatus');
+    const taskStatus = taskStatuses.find({ id: taskId }).value();
 
     if (!taskStatus) {
         res.json({
@@ -96,128 +150,13 @@ server.delete('/removeTasksStatus', (req, res) => {
         return;
     }
 
-    taskStatuses.remove({ id: colId }).write();
+    taskStatuses.remove({ id: taskId }).write();
     res.json({
         success: true
     });
 });
-
-server.get('/getTasks', (req, res) => {
-    const tasks = dataBase.get('tasks').value();
-
-    res.json({
-        success: true,
-        data: tasks
-    });
-});
-
-server.post('/addTask', (req, res) => {
-    const { boardId, colId, task } = req.body;
-
-    try {
-        const tasksInCol = dataBase.get(`tasks.${boardId}.${colId}`).value() || [];
-        tasksInCol.push(task)
-        dataBase.set(`tasks.${boardId}.${colId}`, tasksInCol).write();
-
-        res.status(200).json({
-            success: true
-        });
-    } catch (err) {
-        res.status(500).json({
-            success: false,
-            errMsg: err.message
-        });
-    }
-});
-
-server.delete('/removeTask', (req, res) => {
-    const {id, colId, boardId} = req.body;
-    const taskCol = dataBase.get(`tasks.${boardId}.${colId}`);
-    const task = taskCol.find({ id: id }).value();
-
-    if (!task) {
-        res.json({
-            success: false,
-            errMsg: `Task wasn't found!`
-        });
-
-        return;
-    }
-
-    taskCol.remove({ id: id }).write();
-    res.json({
-        success: true
-    });
-});
-
-server.put('/changeTasksStatus', (req, res) => {
-    const { boardId, columns } = req.body;
-
-    try {
-        dataBase.read();
-        Object.keys(columns).map((colId) => dataBase.set(`tasks.${boardId}.${colId}`, columns[colId]).write() )
-
-        res.status(200).json({
-            success: true
-        });
-    } catch (err) {
-        res.status(500).json({
-            success: false,
-            errMsg: err.message
-        });
-    }
-});
-
-server.get('/getUser', (req, res) => {
-    const user = dataBase.get('user').value();
-
-    res.json({
-        success: true,
-        data: user
-    });
-});
-
-server.post('/setUser', (req, res) => {
-    const user = req.body;
-
-    try {
-        dataBase.set('user', user).write();
-
-        res.status(200).json({
-            success: true
-        });
-    } catch (err) {
-        res.status(500).json({
-            success: false,
-            errMsg: err.message
-        });
-    }
-});
-
-server.put('/logOutUser', (req, res) => {
-    const user = req.body;
-
-    try {
-        dataBase.set('user', user).write();
-
-        res.status(200).json({
-            success: true
-        });
-    } catch (err) {
-        res.status(500).json({
-            success: false,
-            errMsg: err.message
-        });
-    }
-
-    res.json({
-        success: true,
-        data: user
-    });
-});
-
 
 server.use(router);
 server.listen(3001, () => {
-    console.log('JSON Server is running');
+  console.log('JSON Server is running');
 });

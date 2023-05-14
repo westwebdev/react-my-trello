@@ -1,212 +1,167 @@
 {
-  "boards": [
+  "tasks": {
+    "todo": [
+      {
+        "id": 1,
+        "title": "Lorem",
+        "text": "Contrary to popular belief, Lorem Ipsum is not simply random text. It has roots in a piece of classical Latin literature from 45 BC, making it over 2000 years old.",
+        "status": "todo"
+      },
+      {
+        "id": 2,
+        "title": "Ipsum",
+        "text": "Lorem Ipsum is simply dummy text of the printing and typesetting industry.",
+        "status": "todo"
+      },
+      {
+        "id": 3,
+        "title": "Maecenas",
+        "text": "Ut augue ex, scelerisque in rhoncus vel, porta nec augue. Maecenas consequat tempus libero.",
+        "status": "todo"
+      },
+      {
+        "id": 4,
+        "title": "Praesent",
+        "text": "Praesent nec rutrum nunc, in luctus diam. Nullam in odio sit amet dolor scelerisque mollis. Praesent facilisis ullamcorper feugiat.",
+        "status": "todo"
+      }
+    ],
+    "inProcess": [
+      {
+        "id": 6,
+        "title": "Nullam",
+        "text": "Nullam eget diam augue. Curabitur ut congue lectus. Donec nec efficitur diam. Suspendisse mauris felis, scelerisque ac orci ac, tempus consectetur magna. Pellentesque eu neque lacinia, gravida massa a, varius libero.",
+        "status": "todo"
+      }
+    ],
+    "testing": [
+      {
+        "id": 5,
+        "title": "Suscipit",
+        "text": "Nunc interdum lorem id sapien suscipit, et imperdiet ipsum pellentesque.",
+        "status": "todo"
+      },
+      {
+        "id": 1683722035603,
+        "title": "qwe",
+        "text": "asdasdasd",
+        "status": "testing"
+      }
+    ],
+    "done": [
+      {
+        "id": 1683657809149,
+        "title": "qwe",
+        "text": "asdasasdkv;sldmvlsx ",
+        "status": "inProcess"
+      }
+    ]
+  },
+  "taskStatus": [
     {
-      "id": "board_1684008713717",
-      "name": "qwq"
+      "id": "todo",
+      "title": "Todo",
+      "color": "gray.300"
     },
     {
-      "id": "board_1683975679773",
-      "name": "wefwef"
+      "id": "inProcess",
+      "title": "In Process",
+      "color": "yellow.300"
     },
     {
-      "id": "board_1683885364977",
-      "name": "Board_3"
+      "id": "testing",
+      "title": "Testing",
+      "color": "orange.300"
     },
     {
-      "id": "board_2",
-      "name": "Board_2"
-    },
-    {
-      "id": "board_1",
-      "name": "Board_1"
+      "id": "done",
+      "title": "Done",
+      "color": "green.300"
     }
   ],
-  "taskStatus": {
-    "board_1": [
-      {
-        "id": "todo",
-        "title": "Todo",
-        "color": "gray.300"
-      },
-      {
-        "id": "inProcess",
-        "title": "In Process",
-        "color": "yellow.300"
-      },
-      {
-        "id": "testing",
-        "title": "Testing",
-        "color": "orange.300"
-      },
-      {
-        "id": "done",
-        "title": "Done",
-        "color": "green.300"
-      },
-      {
-        "id": "new",
-        "title": "New",
-        "color": "purple.300"
-      },
-      {
-        "id": "hold",
-        "title": "Hold",
-        "color": "red.300"
-      }
-    ],
-    "board_2": [
-      {
-        "id": "new",
-        "title": "New",
-        "color": "green.300"
-      },
-      {
-        "id": "hold",
-        "title": "Hold",
-        "color": "red.300"
-      }
-    ],
-    "board_1683885364977": [
-      {
-        "id": "new",
-        "title": "New",
-        "color": "red.300"
-      }
-    ],
-    "board_1683927605796": [],
-    "board_1683975679773": [
-      {
-        "id": "hold",
-        "title": "Hold",
-        "color": "blue.300"
-      }
-    ],
-    "board_1684008713717": [
-      {
-        "id": "new",
-        "title": "New",
-        "color": "gray.300"
-      },
-      {
-        "id": "asd",
-        "title": "asd",
-        "color": "purple.300"
-      }
-    ],
-    "board_1684016559416": []
-  },
-  "tasks": {
-    "board_1": {
-      "todo": [
-        {
-          "id": 1,
-          "title": "Lorem",
-          "text": "Contrary to popular belief, Lorem Ipsum is not simply random text. It has roots in a piece of classical Latin literature from 45 BC, making it over 2000 years old.",
-          "status": "todo"
-        },
-        {
-          "id": 2,
-          "title": "Ipsum",
-          "text": "Lorem Ipsum is simply dummy text of the printing and typesetting industry.",
-          "status": "todo"
-        },
-        {
-          "id": 3,
-          "title": "Maecenas",
-          "text": "Ut augue ex, scelerisque in rhoncus vel, porta nec augue. Maecenas consequat tempus libero.",
-          "status": "todo"
-        },
-        {
-          "id": 4,
-          "title": "Praesent",
-          "text": "Praesent nec rutrum nunc, in luctus diam. Nullam in odio sit amet dolor scelerisque mollis. Praesent facilisis ullamcorper feugiat.",
-          "status": "todo"
-        },
-        {
-          "id": 1683818665291,
-          "title": "ppppp",
-          "text": "pppppp",
-          "status": "new"
-        }
-      ],
-      "inProcess": [
-        {
-          "id": 6,
-          "title": "Nullam",
-          "text": "Nullam eget diam augue. Curabitur ut congue lectus. Donec nec efficitur diam. Suspendisse mauris felis, scelerisque ac orci ac, tempus consectetur magna. Pellentesque eu neque lacinia, gravida massa a, varius libero.",
-          "status": "todo"
-        },
-        {
-          "id": 5,
-          "title": "Suscipit",
-          "text": "Nunc interdum lorem id sapien suscipit, et imperdiet ipsum pellentesque.",
-          "status": "todo"
-        }
-      ],
-      "testing": [
-        {
-          "id": 1683657809149,
-          "title": "qwe",
-          "text": "asdasasdkv;sldmvlsx ",
-          "status": "inProcess"
-        }
-      ],
-      "done": [
-        {
-          "id": 1683818645663,
-          "title": "eee",
-          "text": "eeee",
-          "status": "done"
-        }
-      ],
-      "new": []
+  "tasksOld": [
+    {
+      "id": 1,
+      "title": "Lorem",
+      "text": "Contrary to popular belief, Lorem Ipsum is not simply random text. It has roots in a piece of classical Latin literature from 45 BC, making it over 2000 years old.",
+      "status": "todo"
     },
-    "board_2": {
-      "new": [],
-      "hold": [
-        {
-          "id": 1683657809140,
-          "title": "qwe",
-          "text": "asdasasdkv;sldmvlsx ",
-          "status": "inProcess"
-        }
-      ]
+    {
+      "id": 2,
+      "title": "Ipsum",
+      "text": "Lorem Ipsum is simply dummy text of the printing and typesetting industry.",
+      "status": "todo"
     },
-    "board_1683885364977": {
-      "new": [
-        {
-          "id": 1683902687895,
-          "title": "sdfdf",
-          "text": "sdfsdf",
-          "status": "w;ejoviwep_qwopwe"
-        }
-      ],
-      "w;ejoviwep_qwopwe": []
+    {
+      "id": 3,
+      "title": "Maecenas",
+      "text": "Ut augue ex, scelerisque in rhoncus vel, porta nec augue. Maecenas consequat tempus libero.",
+      "status": "todo"
     },
-    "board_1684008713717": {
-      "new": [
-        {
-          "id": 1684070695697,
-          "title": "svwev",
-          "text": "wevwe",
-          "status": "new"
-        }
-      ],
-      "asd": [
-        {
-          "id": 1684008728351,
-          "title": "wcqewcvwsad",
-          "text": "adssadvsdv",
-          "status": "new"
-        }
-      ]
+    {
+      "id": 4,
+      "title": "Praesent",
+      "text": "Praesent nec rutrum nunc, in luctus diam. Nullam in odio sit amet dolor scelerisque mollis. Praesent facilisis ullamcorper feugiat.",
+      "status": "todo"
     },
-    "board_1684016559416": {
-      "new": []
+    {
+      "id": 5,
+      "title": "Suscipit",
+      "text": "Nunc interdum lorem id sapien suscipit, et imperdiet ipsum pellentesque.",
+      "status": "todo"
+    },
+    {
+      "id": 6,
+      "title": "Nullam",
+      "text": "Nullam eget diam augue. Curabitur ut congue lectus. Donec nec efficitur diam. Suspendisse mauris felis, scelerisque ac orci ac, tempus consectetur magna. Pellentesque eu neque lacinia, gravida massa a, varius libero.",
+      "status": "todo"
     }
-  },
-  "user": {
-    "isLoggedIn": true,
-    "role": "admin"
-  }
+  ],
+  "taskColors": [
+    {
+      "id": "redColor",
+      "name": "Red",
+      "value": "red.300"
+    },
+    {
+      "id": "purpleColor",
+      "name": "Purple",
+      "value": "purple.300"
+    },
+    {
+      "id": "blueColor",
+      "name": "Blue",
+      "value": "blue.300"
+    },
+    {
+      "id": "tealColor",
+      "name": "Teal",
+      "value": "teal.300"
+    },
+    {
+      "id": "pinkColor",
+      "name": "Pink",
+      "value": "pink.300"
+    },
+    {
+      "id": "yellowColor",
+      "name": "Yellow",
+      "value": "yellow.300"
+    },
+    {
+      "id": "orangeColor",
+      "name": "Orange",
+      "value": "orange.300"
+    },
+    {
+      "id": "greenColor",
+      "name": "Green",
+      "value": "green.300"
+    },
+    {
+      "id": "grayColor",
+      "name": "Gray",
+      "value": "gray.300"
+    }
+  ]
 }

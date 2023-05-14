@@ -5,6 +5,6 @@ export const userRole = [
 ]
 
 export const user ={
-    isLoggedIn: false,
+    isLogged: false,
     role: ''
 }

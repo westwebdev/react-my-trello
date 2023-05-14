@@ -1,32 +1,13 @@
 import { Box, Divider, SimpleGrid, Text } from '@chakra-ui/react';
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import FormWrapper from '../../../components/Forms/FormWrapper';
 import { loginForm } from '../../../data/forms';
 import formComponentRender from '../../../components/Forms/formComponentRender';
 import { extendFormData } from '../../../utils/formUtils';
 import { formValidation } from '../../../utils/formValidation';
-import GlobalContext from '../../../context/globalContext';
-import useFetch from '../../../services/hooks/useFetch';
 
-const LoginPage = () => {
-    const {setUserData} = useContext(GlobalContext)
+const LoginPage = ({userContextData, setUserContextData}) => {
     const [loginFormData, setLoginFormData] = useState(loginForm);
-    const [currentUser, setCurrentUser] = useState({})
-
-    const { data, isLoading, addData } = useFetch();
-
-    useEffect(() => {
-        if (!isLoading) {
-            sessionStorage.setItem('user', JSON.stringify(currentUser));
-            setUserData(currentUser);
-        }
-    }, [isLoading]);
-
-    useEffect(() => {
-        if (Object.keys(currentUser).length) {
-            addData('setUser', currentUser);
-        }
-    }, [currentUser])
 
     const onSubmitForm = (e) => {
         e.preventDefault();
@@ -49,8 +30,9 @@ const LoginPage = () => {
         const {validatedForm, isValid} = formValidation([...loginFormData]);
 
         if (isValid) {
-            setCurrentUser({
-                isLoggedIn: true,
+            setUserContextData({
+                ...userContextData,
+                isLogged: true,
                 role: userRole
             })
         } else {

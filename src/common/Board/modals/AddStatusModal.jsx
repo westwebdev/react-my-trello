@@ -1,26 +1,28 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { ModalOverlay, ModalContent, ModalHeader, ModalCloseButton, Text } from '@chakra-ui/react';
 import { taskStatusForm } from '../../../data/forms';
-import formComponentRender from '../../Forms/formComponentRender';
+import formComponentRender from '../../../components/Forms/formComponentRender';
 import { extendFormData, getFormDataByFieldId } from '../../../utils/formUtils';
 import { clearValidationErrors, formValidation } from '../../../utils/formValidation';
-import FormWrapper from '../../Forms/FormWrapper';
+import FormWrapper from '../../../components/Forms/FormWrapper';
+import { tasksStatusAction } from '../../../provider/tasksStatusProvider';
 import useFetch from '../../../services/hooks/useFetch';
-import SpinnerComponent from '../../SpinnerComponent';
-import BoardItemContext from '../../../context/boardItemContext';
+import SpinnerComponent from '../../../components/SpinnerComponent';
+import TasksStatusContext from '../../../context/tasksStatusContext';
 
 const AddStatusModal = ({onModalClose}) => {
+    const { tasksStatus } = useContext(TasksStatusContext);
     const [showSpinner, setShowSpinner] = useState(false)
     const [formData, setFormData] = useState(taskStatusForm);
     const [newTaskStatus, setNewTaskStatus] = useState({});
     const [isStatusAlreadyExist, setIsStatusAlreadyExist] = useState(false);
     const {isLoading, isError, errorMsg, addData } = useFetch();
-    const { boardId, tasksStatus, taskStatusDispatch } = useContext(BoardItemContext);
+    const { addStatus } = tasksStatusAction;
 
     useEffect(() => {
         if (!isLoading) {
             setShowSpinner(isLoading);
-            taskStatusDispatch({'type': 'addStatus', 'boardId': boardId, 'status': newTaskStatus})
+            addStatus(newTaskStatus)
             onModalClose();
 
             if (isError) {
@@ -31,12 +33,12 @@ const AddStatusModal = ({onModalClose}) => {
 
     useEffect(() => {
         if (Object.keys(newTaskStatus).length) {
-            addData('addTasksStatus', {boardId, status: newTaskStatus});
+            addData('addTasksStatus', {status: newTaskStatus});
         }
     }, [newTaskStatus]);
 
     const checkRepeatingStatus = (id) => {
-        return tasksStatus ? tasksStatus.findIndex(item => item.id === id) + 1 : 0;
+        return tasksStatus.findIndex(item => item.id === id) + 1
     }
 
     const onSubmitForm = (e) => {
