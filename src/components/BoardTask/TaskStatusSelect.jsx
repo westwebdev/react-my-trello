@@ -3,9 +3,9 @@ import React, { useContext, useEffect, useState } from 'react';
 import BoardItemContext from '../../context/boardItemContext';
 import useFetch from '../../services/hooks/useFetch';
 
-const TaskStatusSelect = ({statusId, task, setShowSpinner}) => {
+const TaskStatusSelect = ({statusId, task, setShowSpinner, isChanged, setIsChanging}) => {
     const {boardId, tasks, tasksStatus, tasksDispatch} = useContext(BoardItemContext);
-    const {isLoading, updateData } = useFetch();
+    const {isLoading, isError, errorMsg, updateData } = useFetch();
 
     const [changedData, setChangedData] = useState({});
 
@@ -14,13 +14,23 @@ const TaskStatusSelect = ({statusId, task, setShowSpinner}) => {
             updateData('changeTasksStatus', changedData);
         }
     }, [changedData])
-
+    
     useEffect(() => {
-        if (!isLoading) {
-            setShowSpinner(true)
-            tasksDispatch({'type': 'changeTaskStatus', 'data': changedData})
+        if (!isLoading && !isError) {
+            setIsChanging(!isLoading);
+        }
+
+        if (isError) {
+            console.error(errorMsg)
         }
     }, [isLoading])
+
+    useEffect(() => {
+        if (isChanged) {
+            setShowSpinner(isLoading);
+            tasksDispatch({'type': 'changeTaskStatus', 'data': changedData})
+        }
+    }, [isChanged])
 
     const changeItemStatus = (e) => {
         let status = e.target.value;
@@ -41,11 +51,11 @@ const TaskStatusSelect = ({statusId, task, setShowSpinner}) => {
                 [statusId]: tasks[statusId],
                 [status]: tasks[status]
             }
-        })
+        });
     }
 
     return (
-        <Select my='2' value={statusId} onChange={(e) => changeItemStatus(e, task.id)}>
+        <Select my='2' value={statusId} onChange={(e) => changeItemStatus(e)}>
             {
                 tasksStatus.map(
                     item => <option key={item.id} value={item.id}>{item.title}</option>
