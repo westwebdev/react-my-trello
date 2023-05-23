@@ -6,22 +6,23 @@ import SpinnerComponent from '../SpinnerComponent';
 import AddNewTask from '../BoardTask/modals/AddNewTask';
 import RemoveButtonComponent from '../RemoveButtonComponent';
 import useGetUserRole from '../../services/hooks/useGetUserRole';
+import AnimatedBox from '../AnimatedBlock';
 
 const BoardColumn = memo(({ boardId, colItem, taskStatusDispatch }) => {
-    const [showSpinner, setShowSpinner] = useState(true)
+    const [showSpinner, setShowSpinner] = useState(false)
     const [isEmptyBoard, setIsEmptyBoard] = useState(true);
     const {isLoading, isError, errorMsg, removeData } = useFetch();
     const [removingData, setRemovingData] = useState({});
+    const [isAnimationComplete, setIsAnimationComplete] = useState(false);
     const [isMounted, setIsMounted] = useState(false);
 
     useEffect(() => {
-        if (!isLoading) {
-            setShowSpinner(isLoading);
-            taskStatusDispatch({'type': 'removeStatus', 'statusData': removingData })
+        if (!isLoading && !isError) {
+            setIsMounted(false);
+        }
 
-            if (isError) {
-                console.error(errorMsg)
-            }
+        if (isError) {
+            console.error(errorMsg)
         }
     }, [isLoading]);
 
@@ -31,59 +32,104 @@ const BoardColumn = memo(({ boardId, colItem, taskStatusDispatch }) => {
         } else {
           setIsMounted(true);
         }
-      }, [removingData]);
+    }, [removingData]);
+
+    useEffect(() => {
+        if (!isMounted && isAnimationComplete) {
+            setShowSpinner(isLoading);
+        }
+    }, [isAnimationComplete, isMounted]);
 
     const remove = () => {
-        setShowSpinner(false);
+        setShowSpinner(true);
         setRemovingData({boardId, colId: colItem.id})
     }
 
+    const handleAnimationComplete = () => {
+        setIsAnimationComplete(true);
+        taskStatusDispatch({'type': 'removeStatus', 'statusData': removingData })
+    };
+
     const userRole = useGetUserRole();
+    const variants = {
+        hidden: { width: 0},
+        visible: { width: 'auto'}
+    };
+    const variants2 = {
+        hidden: { x: '-100%', zIndex: -1 },
+        visible: { x: 0, zIndex: 1 }
+    };
 
     return (
-        <Box
-            position='relative'
-            bg={colItem.color}
-            p='2'
-            mx='2'
-            flex='1 1 20%'
-            minW='20%'
-            display='flex'
-            justifyContent='center'
-            alignItems='center'
+        <AnimatedBox
+            flex='1 0 23%'
+            minW='23%'
+            overflowX='hidden'
+            initial="hidden"
+            animate={isMounted ? "visible" : "hidden"}
+            variants={variants}
+            transition={{
+                duration: 0.2,
+                ease: "linear"
+            }}
         >
-            {
-                !showSpinner &&
-                <SpinnerComponent />
-            }
-            {
-                isEmptyBoard && userRole === 'admin' && 
-                <RemoveButtonComponent remove={remove} />
-            }
-            <Box
-                textAlign='center'
+
+            <AnimatedBox
+                position='relative'
+            
+
+                initial="hidden"
+                animate={isMounted ? "visible" : "hidden"}
+                variants={variants2}
+                transition={{
+                    duration: 0.25,
+                    ease: "linear"
+                }}
+                onAnimationComplete={handleAnimationComplete}
             >
-                <Heading
-                    as='h2'
-                    mb='4'
-                    textAlign='center'
+                <Box
+                    position='relative'
+                    bg={colItem.color}
+                    p='2'
+                    mx='2'
+                    display='flex'
+                    justifyContent='center'
+                    alignItems='center'
                 >
                     {
-                        colItem.title
+                        showSpinner &&
+                        <SpinnerComponent />
                     }
-                </Heading>
-                {
-                    <>
-                        {
-                            (userRole === 'admin' || userRole === 'manager') &&
-                            <AddNewTask colId={colItem.id} />
-                        }
-                        <BoardColInner colId={colItem.id} setIsEmptyBoard={setIsEmptyBoard} />  
-                    </>
-                }
+                    {
+                        isEmptyBoard && userRole === 'admin' && 
+                        <RemoveButtonComponent remove={remove} />
+                    }
+                        <Box
+                            textAlign='center'
+                        >
+                            <Heading
+                                as='h2'
+                                mb='4'
+                                textAlign='center'
+                            >
+                                {
+                                    colItem.title
+                                }
+                            </Heading>
+                            {
+                                <>
+                                    {
+                                        (userRole === 'admin' || userRole === 'manager') &&
+                                        <AddNewTask colId={colItem.id} />
+                                    }
+                                    <BoardColInner colId={colItem.id} setIsEmptyBoard={setIsEmptyBoard} />  
+                                </>
+                            }
 
-            </Box>
-        </Box>
+                        </Box>
+                </Box>
+            </AnimatedBox>
+        </AnimatedBox>
     );
 }, (prevProps, currentProps) => {
     return prevProps.colItem.id === currentProps.colItem.id

@@ -8,7 +8,7 @@ const statusReducer = (tasksStatus, action) => {
             return {...tasksStatus, [id]: [...tasksStatus?.[id] || [], status]} ;
         case 'removeStatus':
             const { boardId, colId } = action.statusData;
-            const currentBoard = tasksStatus[boardId].filter(item => item.id !== colId);
+            const currentBoard = tasksStatus[boardId] ? tasksStatus[boardId].filter(item => item.id !== colId) : [];
 
             return {...tasksStatus, [boardId]: currentBoard};
         case 'setStatuses':

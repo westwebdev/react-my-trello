@@ -6,21 +6,24 @@ import AddNewCol from '../../components/BoardColumn/modals/AddNewCol';
 import BoardItemContext from '../../context/boardItemContext';
 import RemoveButtonComponent from '../../components/RemoveButtonComponent';
 import useGetUserRole from '../../services/hooks/useGetUserRole';
+import AnimatedBox from '../../components/AnimatedBlock';
+import SpinnerComponent from '../../components/SpinnerComponent';
 
-const BoardInner = ({ boardName, boardDispatch, setShowSpinner }) => {
+const BoardInner = ({ boardName, boardDispatch }) => {
+    const [showSpinner, setShowSpinner] = useState(false)
     const { boardId, tasksStatus, taskStatusDispatch } = useContext(BoardItemContext);
     const {isLoading, isError, errorMsg, removeData } = useFetch();
     const [removeObj, setRemoveObj] = useState({});
+    const [isAnimationComplete, setIsAnimationComplete] = useState(false);
     const [isMounted, setIsMounted] = useState(false);
 
     useEffect(() => {
-        if (!isLoading) {
-            setShowSpinner(isLoading);
-            boardDispatch({'type': 'removeBoard', board: removeObj})
+        if (!isLoading && !isError) {
+            setIsMounted(false);
+        }
 
-            if (isError) {
-                console.error(errorMsg)
-            }
+        if (isError) {
+            console.error(errorMsg)
         }
     }, [isLoading]);
 
@@ -30,72 +33,104 @@ const BoardInner = ({ boardName, boardDispatch, setShowSpinner }) => {
         } else {
           setIsMounted(true);
         }
-      }, [removeObj]);
+    }, [removeObj]);
+
+    useEffect(() => {
+        if (!isMounted && isAnimationComplete) {
+            setShowSpinner(isLoading);
+        }
+    }, [isAnimationComplete, isMounted]);
 
     const remove = () => {
         setShowSpinner(true);
         setRemoveObj({'id': boardId})
     }
 
+    const handleAnimationComplete = () => {
+        setIsAnimationComplete(true);
+        boardDispatch({'type': 'removeBoard', board: removeObj})
+    };
+
     const userRole = useGetUserRole();
+    const variants = {
+        hidden: { height: 0 },
+        visible: { height: 'auto' }
+    };
 
     return (
-        <Box
-            pos='relative'
-            width='100%'
-            borderTopWidth='1px'
-            borderTopStyle='solid'
-            borderTopColor='gray.400'
+        <AnimatedBox
+            overflow='hidden'
+            initial='hidden'
+            animate={isMounted ? "visible" : "hidden"}
+            variants={variants}
+            transition={{
+                duration: 0.3,
+                ease: "easeInOut"
+            }}
+            onAnimationComplete={handleAnimationComplete}
         >
-            <Heading textAlign='center' pt='20px'>{boardName}</Heading>
-            {
-                !tasksStatus || !tasksStatus?.length && userRole === 'admin' &&
-                <RemoveButtonComponent remove={remove} />
-            }
-            <Flex
-                paddingY='20px'
+            <Box
+                pos='relative'
+                width='100%'
+                borderTopWidth='1px'
+                borderTopStyle='solid'
+                borderTopColor='gray.400'
+                p='10px'
             >
                 {
-                    !tasksStatus
-                    ?
-                    <Flex justifyContent='center' alignItems='center'>
-                        {
-                            Array.from({ length: 4 }).map((_,i) => {
-                                return <Skeleton key={i} height='40px' width='100%' mx='2' />
-                            })
-                        }
-                    </Flex>
-                    :
-                    <Box
-                        flex='0 1 auto'
-                        overflowX='auto'
-                    >
-                        <Flex
-                            justifyContent='flex-start'
-                            alignItems='flex-start'
-                            overflowX='auto'
-                            maxHeight='700px'
-                            pt='10px'
-                        >
+                    showSpinner &&
+                    <SpinnerComponent />
+                }
+                <Heading textAlign='center' pt='20px'>{boardName}</Heading>
+                {
+                    !tasksStatus || !tasksStatus?.length && userRole === 'admin' &&
+                    <RemoveButtonComponent remove={remove} />
+                }
+                <Flex
+                    paddingY='20px'
+                >
+                    {
+                        !tasksStatus
+                        ?
+                        <Flex justifyContent='center' alignItems='center'>
                             {
-                                tasksStatus.map(item => 
-                                    <BoardColumn
-                                        key={item.id}
-                                        boardId={boardId}
-                                        colItem={item}
-                                        taskStatusDispatch={taskStatusDispatch}
-                                    />
-                                )
+                                Array.from({ length: 4 }).map((_,i) => {
+                                    return <Skeleton key={i} height='40px' width='100%' mx='2' />
+                                })
                             }
                         </Flex>
-                    </Box>
-                }
-                {
-                    (userRole === 'admin' || userRole === 'manager') &&
-                    <AddNewCol />
-                }
-            </Flex>
-        </Box>
+                        :
+                        <Box
+                            flex='0 1 auto'
+                            overflowX='auto'
+                        >
+                            <Flex
+                                justifyContent='flex-start'
+                                alignItems='flex-start'
+                                overflowX='auto'
+                                maxHeight='700px'
+                                pt='10px'
+                            >
+                                {
+                                    tasksStatus.map(item => 
+                                        <BoardColumn
+                                            key={item.id}
+                                            boardId={boardId}
+                                            colItem={item}
+                                            taskStatusDispatch={taskStatusDispatch}
+                                        />
+                                    )
+                                }
+                            </Flex>
+                        </Box>
+                    }
+                    {
+                        (userRole === 'admin' || userRole === 'manager') &&
+                        <AddNewCol />
+                    }
+                </Flex>
+            </Box>
+        </AnimatedBox>
     );
 };
 

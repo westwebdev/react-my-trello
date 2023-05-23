@@ -22,7 +22,9 @@ const BoardColInner = ({ colId, setIsEmptyBoard }) => {
     }, [tasks]);
 
     return (
-        <VStack mt='4'>
+        <VStack
+            mt='4'
+        >
             {
                 tasksInCol?.length
                 &&

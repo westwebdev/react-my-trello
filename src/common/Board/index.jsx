@@ -30,21 +30,18 @@ const Board = () => {
       }, [isMounted]);
 
     useEffect(() => {
-        console.log("🚀 ~ useEffect ~ tasksStatusData:")
         if (boardData) {
             boardDispatch({'type': 'setBoards', 'boards': boardData});
         }
     }, [isBoardDataLoading]);
 
     useEffect(() => {
-        console.log("🚀 ~ useEffect ~ tasksStatusData:")
         if (tasksStatusData) {
             taskStatusDispatch({'type': 'setStatuses', 'statuses': tasksStatusData});
         }
     }, [isTasksStatusDataLoading]);
 
     useEffect(() => {
-        console.log("🚀 ~ useEffect ~ tasksData:")
         if (tasksData) {
             tasksDispatch({'type': 'setTasks', 'tasks': tasksData});
         }
@@ -54,10 +51,6 @@ const Board = () => {
 
     return (
         <>
-            {
-                showSpinner &&
-                <SpinnerComponent />
-            }
             {
                 (userRole === 'admin' || userRole === 'manager') &&
                 <Box py='2' mb='10px'>
