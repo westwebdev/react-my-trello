@@ -88,6 +88,7 @@ const BoardInner = ({ boardName, boardDispatch }) => {
                 }
                 <Flex
                     paddingY='20px'
+                    w='100%'
                 >
                     {
                         !tasksStatus
@@ -101,7 +102,7 @@ const BoardInner = ({ boardName, boardDispatch }) => {
                         </Flex>
                         :
                         <Box
-                            flex='0 1 auto'
+                            flex='1 0 100%'
                             overflowX='auto'
                         >
                             <Flex
@@ -121,12 +122,12 @@ const BoardInner = ({ boardName, boardDispatch }) => {
                                         />
                                     )
                                 }
+                                {
+                                    (userRole === 'admin' || userRole === 'manager') &&
+                                    <AddNewCol />
+                                }
                             </Flex>
                         </Box>
-                    }
-                    {
-                        (userRole === 'admin' || userRole === 'manager') &&
-                        <AddNewCol />
                     }
                 </Flex>
             </Box>

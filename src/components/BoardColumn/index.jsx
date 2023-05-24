@@ -52,83 +52,65 @@ const BoardColumn = memo(({ boardId, colItem, taskStatusDispatch }) => {
 
     const userRole = useGetUserRole();
     const variants = {
-        hidden: { width: 0},
-        visible: { width: 'auto'}
-    };
-    const variants2 = {
-        hidden: { x: '-100%', zIndex: -1 },
-        visible: { x: 0, zIndex: 1 }
+        hidden: { maxWidth: 0},
+        visible: { maxWidth: '23%'}
     };
 
     return (
         <AnimatedBox
             flex='1 0 23%'
-            minW='23%'
+            maxW='23%'
+            py='2'
             overflowX='hidden'
             initial="hidden"
             animate={isMounted ? "visible" : "hidden"}
             variants={variants}
             transition={{
-                duration: 0.2,
+                duration: 0.25,
                 ease: "linear"
             }}
+            onAnimationComplete={handleAnimationComplete}
         >
-
-            <AnimatedBox
+            <Box
                 position='relative'
-            
-
-                initial="hidden"
-                animate={isMounted ? "visible" : "hidden"}
-                variants={variants2}
-                transition={{
-                    duration: 0.25,
-                    ease: "linear"
-                }}
-                onAnimationComplete={handleAnimationComplete}
+                bg={colItem.color}
+                p='2'
+                mx='2'
+                display='flex'
+                justifyContent='center'
+                alignItems='center'
             >
+                {
+                    showSpinner &&
+                    <SpinnerComponent />
+                }
+                {
+                    isEmptyBoard && userRole === 'admin' && 
+                    <RemoveButtonComponent remove={remove} />
+                }
                 <Box
-                    position='relative'
-                    bg={colItem.color}
-                    p='2'
-                    mx='2'
-                    display='flex'
-                    justifyContent='center'
-                    alignItems='center'
+                    textAlign='center'
                 >
+                    <Heading
+                        as='h2'
+                        mb='4'
+                        textAlign='center'
+                    >
+                        {
+                            colItem.title
+                        }
+                    </Heading>
                     {
-                        showSpinner &&
-                        <SpinnerComponent />
-                    }
-                    {
-                        isEmptyBoard && userRole === 'admin' && 
-                        <RemoveButtonComponent remove={remove} />
-                    }
-                        <Box
-                            textAlign='center'
-                        >
-                            <Heading
-                                as='h2'
-                                mb='4'
-                                textAlign='center'
-                            >
-                                {
-                                    colItem.title
-                                }
-                            </Heading>
+                        <>
                             {
-                                <>
-                                    {
-                                        (userRole === 'admin' || userRole === 'manager') &&
-                                        <AddNewTask colId={colItem.id} />
-                                    }
-                                    <BoardColInner colId={colItem.id} setIsEmptyBoard={setIsEmptyBoard} />  
-                                </>
+                                (userRole === 'admin' || userRole === 'manager') &&
+                                <AddNewTask colId={colItem.id} />
                             }
-
-                        </Box>
+                            <BoardColInner colId={colItem.id} setIsEmptyBoard={setIsEmptyBoard} />  
+                        </>
+                    }
                 </Box>
-            </AnimatedBox>
+            </Box>
         </AnimatedBox>
     );
 }, (prevProps, currentProps) => {
