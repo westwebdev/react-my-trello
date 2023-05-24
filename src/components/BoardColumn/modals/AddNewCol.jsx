@@ -15,7 +15,6 @@ const AddNewCol = () => {
                 bg='gray.200'
                 p='2'
                 mx='2'
-                mt='10px'
                 flex='1 0 10%'
                 maxW='10%'
                 height='75px'
